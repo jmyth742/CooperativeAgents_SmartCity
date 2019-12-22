@@ -13,6 +13,7 @@ public class VehicleAgent extends Agent{
 	//Position of the agent
 	
 	//Vehicle Initialization
+	@Override
 	protected void setup() {
 		// msg of created agent
 		System.out.println("Vehicle Agent "+getAID().getName()+" is ready with goal " + goal);
@@ -21,7 +22,6 @@ public class VehicleAgent extends Agent{
 		 * stages of battery life
 		 * 100-80% - agent decide to go to a charging station near 
 		 */
-		doDelete();
 	}
 	
 	//Generates with 80% probability goal as "save money" (= "m")

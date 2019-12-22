@@ -16,7 +16,9 @@ public class Main {
 			AgentController ac;
 
 			try {
-				ac=cc.createNewAgent("CSAgent" + i, "charging.station.Charging_Station_Agent", null);
+				ac = cc.createNewAgent("VehicleAgent" + i, "VehicleAgent", null);
+				ac.start();
+				ac = cc.createNewAgent("CSAgent" + i, "charging.station.Charging_Station_Agent", null);
 				ac.start();
 			} catch (Exception e) {
 				// TODO: handle exception
