@@ -5,6 +5,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * 
+ * @author anoulis
+ * The handling of the booking list stuff should be done here.
+ */
+
+
 public class BookingList<T>
 {
     private final ArrayList<T> list;

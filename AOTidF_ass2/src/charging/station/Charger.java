@@ -3,6 +3,18 @@ package charging.station;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
+/**
+ * 
+ * @author anoulis
+ * TODO
+ * The charging event should be linked to the charger.
+ * The charger depending on type should determine the charging time from % to %.
+ * Maybe also the cost.
+ * 
+ *
+ */
+
 public class Charger {	
     private int id;
     private final String kindOfCharging;
@@ -49,7 +61,6 @@ public class Charger {
     
     /**
      * Sets a ChargingEvent to the Charger.
-     *
      * @param ev The ChargingEvent to be linked with the Charger.
      */
     synchronized void setChargingEvent(final ChargingEvent ev) {
@@ -66,10 +77,7 @@ public class Charger {
     public void startCharger() {
     	
     }
-    
-    private void handleQueueEvents() {
-    	
-    }
+
 
     
     

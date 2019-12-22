@@ -3,8 +3,18 @@ package charging.station;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import jade.core.Agent;
+
+/**
+ * 
+ * @author anoulis
+ * TODO
+ * List of charging events for every charger.
+ * Return cost for chargingPeriod,unitPrice under the communication with CarAgent.
+ * Or equivalent message if it's full booked or damaged.
+ * 
+ *
+ */
 
 public class Charging_Station_Agent extends Agent{
 	
@@ -83,7 +93,7 @@ public class Charging_Station_Agent extends Agent{
     }
     
     /**
-     * Adds a ChargingEvent to the corresponding waiting list.
+     * Adds a ChargingEvent to the corresponding booking list.
      * @param event The ChargingEvent to be added.
      */
     public void updateQueue(final ChargingEvent event) {
