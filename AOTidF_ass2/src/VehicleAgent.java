@@ -8,7 +8,7 @@ import jade.core.behaviours.Behaviour;
 public class VehicleAgent extends Agent{
 	//Battery status of the agent
 	private int battery_life;
-	// Goal to save money "m" or time "t"
+	// Goal to save money "m" or save time "t"
 	private String goal = RandomGoal();
 	//Position of the agent
 	
@@ -27,9 +27,7 @@ public class VehicleAgent extends Agent{
 	//Generates with 80% probability goal as "save money" (= "m")
 	//and with 20% probability goal to "save time" (= "t")
 	private String RandomGoal() {
-		System.out.println("Random goal");
 		List<String> list = Arrays.asList("m", "m", "m", "m", "m", "m", "m", "m", "t", "t");
-		System.out.println("List is "+list);
 		
 		Random rand = new Random();
 		String randomgoal = list.get(rand.nextInt(list.size()));
