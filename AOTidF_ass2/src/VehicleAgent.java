@@ -5,7 +5,7 @@ import jade.core.behaviours.Behaviour;
 
 
 
-public class Vehicle_Agent extends Agent{
+public class VehicleAgent extends Agent{
 	//Battery status of the agent
 	private int battery_life;
 	// Goal to save money "m" or time "t"
@@ -15,19 +15,21 @@ public class Vehicle_Agent extends Agent{
 	//Vehicle Initialization
 	protected void setup() {
 		// msg of created agent
-		System.out.println("Vehicle Agent "+getAID().getName()+" is ready.");
+		System.out.println("Vehicle Agent "+getAID().getName()+" is ready with goal " + goal);
 
 		/** TODO: 
 		 * stages of battery life
 		 * 100-80% - agent decide to go to a charging station near 
 		 */
+		doDelete();
 	}
 	
 	//Generates with 80% probability goal as "save money" (= "m")
 	//and with 20% probability goal to "save time" (= "t")
 	private String RandomGoal() {
-		List<String> list = Collections.nCopies(8, "m");
-		list.addAll(Collections.nCopies(2,"t"));
+		System.out.println("Random goal");
+		List<String> list = Arrays.asList("m", "m", "m", "m", "m", "m", "m", "m", "t", "t");
+		System.out.println("List is "+list);
 		
 		Random rand = new Random();
 		String randomgoal = list.get(rand.nextInt(list.size()));
@@ -35,7 +37,7 @@ public class Vehicle_Agent extends Agent{
 		return randomgoal;
 	}
 	
-	private class ChargingStationRequest extends Behaviour{
+	/**private class ChargingStationRequest extends Behaviour{
 
 		@Override
 		public void action() {
@@ -49,6 +51,6 @@ public class Vehicle_Agent extends Agent{
 			return false;
 		}
 		
-	}
+	}**/
 
 }
