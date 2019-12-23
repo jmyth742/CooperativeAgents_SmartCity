@@ -10,6 +10,7 @@ public class VehicleAgent extends Agent{
 	private int battery_life;
 	// Goal to save money "m" or save time "t"
 	private String goal = RandomGoal();
+	
 	//Position of the agent
 	
 	//Vehicle Initialization
@@ -18,17 +19,12 @@ public class VehicleAgent extends Agent{
 		// msg of created agent
 		System.out.println("Vehicle Agent "+getAID().getName()+" is ready with goal " + goal);
 
-		/** TODO: 
-		 * stages of battery life
-		 * 100-80% - agent decide to go to a charging station near 
-		 */
 	}
 	
 	//Generates with 80% probability goal as "save money" (= "m")
 	//and with 20% probability goal to "save time" (= "t")
 	private String RandomGoal() {
 		List<String> list = Arrays.asList("m", "m", "m", "m", "m", "m", "m", "m", "t", "t");
-		
 		Random rand = new Random();
 		String randomgoal = list.get(rand.nextInt(list.size()));
 		
@@ -36,7 +32,7 @@ public class VehicleAgent extends Agent{
 	}
 	
 	/**private class ChargingStationRequest extends Behaviour{
-
+		 
 		@Override
 		public void action() {
 			// TODO Auto-generated method stub
