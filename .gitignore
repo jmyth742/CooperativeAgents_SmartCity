@@ -3,7 +3,7 @@ MTPs-Main-Container.txt
 AOTidf_ass2/*.classpath
 AOTidf_ass2/*.settings
 AOTidf_ass2/*.project
-AOTidf_ass2/bin/
+
 
 # eclipse project file
 .settings/
@@ -15,9 +15,7 @@ AOTidf_ass2/bin/
 
  
 .metadata
-bin/
 tmp/
-bin/**
 tmp/**
 tmp/**/*
 *.tmp
