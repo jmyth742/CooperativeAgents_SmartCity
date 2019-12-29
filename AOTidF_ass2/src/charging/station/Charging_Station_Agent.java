@@ -12,6 +12,8 @@ import jade.core.Agent;
  * List of charging events for every charger.
  * Return cost for chargingPeriod,unitPrice under the communication with CarAgent.
  * Or equivalent message if it's full booked or damaged.
+ * Add Yellow Page service here - In book Developing Multi Agent systems with JADE page 
+ * 72 (or Title 4.4)
  * 
  *
  */

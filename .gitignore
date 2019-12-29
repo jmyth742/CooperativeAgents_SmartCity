@@ -1,4 +1,26 @@
 APDescription.txt
 MTPs-Main-Container.txt
-AOTidf_ass2/.classpath
+AOTidf_ass2/*.classpath
+AOTidf_ass2/*.settings
+AOTidf_ass2/*.project
 AOTidf_ass2/bin/
+
+# eclipse project file
+.settings/
+.classpath
+.project
+/.classpath
+/*.project
+/.settings
+
+ 
+.metadata
+bin/
+tmp/
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
