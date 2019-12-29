@@ -1,3 +1,4 @@
+package vehicle;
 import java.util.*;
 
 import jade.core.Agent;
@@ -16,6 +17,8 @@ public class VehicleAgent extends Agent{
 	//Vehicle Initialization
 	@Override
 	protected void setup() {
+		//Object[] args = getArguments();
+		//String goal = (String) args[0]
 		// msg of created agent
 		System.out.println("Vehicle Agent "+getAID().getName()+" is ready with goal " + goal);
 
@@ -29,6 +32,10 @@ public class VehicleAgent extends Agent{
 		String randomgoal = list.get(rand.nextInt(list.size()));
 		
 		return randomgoal;
+	}
+	
+	public int get_battery_life() {
+		return battery_life;
 	}
 	
 	/**private class ChargingStationRequest extends Behaviour{

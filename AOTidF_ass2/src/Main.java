@@ -16,7 +16,7 @@ public class Main {
 			AgentController ac;
 
 			try {
-				ac = cc.createNewAgent("VehicleAgent" + i, "VehicleAgent", null);
+				ac = cc.createNewAgent("VehicleAgent" + i, "vehicle.VehicleAgent", null);
 				ac.start();
 				ac = cc.createNewAgent("CSAgent" + i, "charging.station.Charging_Station_Agent", null);
 				ac.start();

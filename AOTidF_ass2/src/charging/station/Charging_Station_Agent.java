@@ -17,13 +17,6 @@ import jade.core.Agent;
  */
 
 public class Charging_Station_Agent extends Agent{
-<<<<<<< HEAD
-	/**
-	 * Add Yellow Page service here - In book Developing Multi Agent systems with JADE page 
-	 * 72 (or Title 4.4)
-	 * 
-	 */
-=======
 	
 	private int id;
 	private String name;
@@ -147,7 +140,6 @@ public class Charging_Station_Agent extends Agent{
 
     }
 
->>>>>>> ffb92bed20d59036795d8e03e88a62302fd7ff62
 	@Override
 	protected void setup() {
 		System.out.println("Hello, let's create an Agent of Charging Station");
