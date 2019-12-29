@@ -20,11 +20,13 @@ public class Main {
 				ac.start();
 				ac = cc.createNewAgent("CSAgent" + i, "charging.station.Charging_Station_Agent", null);
 				ac.start();
+
 			} catch (Exception e) {
 				// TODO: handle exception
 				e.printStackTrace();
 			}
 		}
+		
 		
 	}
 

@@ -68,14 +68,21 @@ public class Charging_Station_Agent extends Agent{
         for (int i=0; i<slowChargers;i++) {
         	chargers.add(new Charger(this, "slow"));	
         }
+        
+    }
+    
+    /**
+     * @return The Name of the ChargingStation.
+     */
+    public String getCSName() {
+        return this.name;
     }
     
     /**
      * Sets a name to the ChargingStation.
      * @param nam The name to be set.
      */
-    public void setName(final String name)
-    {
+    public void setName(final String name){
         this.name = name;
     }
 
@@ -144,8 +151,14 @@ public class Charging_Station_Agent extends Agent{
 
 	@Override
 	protected void setup() {
-		System.out.println("Hello, let's create an Agent of Charging Station");
 		System.out.println("");
+		//System.out.println("Hello, let's create an Agent of Charging Station");
+		ChargingStation(getAID().getLocalName(), 10, 20, 0.5, 0.24);
+	
+		System.out.print("Charging_Station_Agent "+getCSName()+" with" );
+		System.out.println(" ID "+getId()+" is ready." );
+		System.out.println("");
+		
 		//doDelete();
 		
 	}
