@@ -158,7 +158,9 @@ public class Charging_Station_Agent extends Agent{
 	protected void setup() {
 		//System.out.println("");
 		//System.out.println("Hello, let's create an Agent of Charging Station");
-		ChargingStation(getAID().getLocalName(), 10, 20, 0.5, 0.24);
+		
+		// Let's consider only 2 chargers for every station at first point.
+		ChargingStation(getAID().getLocalName(), 1, 1, 0.5, 0.24);
 	
 		//System.out.print("Charging_Station_Agent "+getCSName()+" with" );
 		//System.out.println(" ID "+getId()+" is ready." );
@@ -197,6 +199,16 @@ public class Charging_Station_Agent extends Agent{
 		}
 		
 		//doDelete();
+		
+	}
+	
+	/**
+	 * Function to do the Registrations in Yellow Pages
+	 * for every charging station.
+	 * Consider that there are many chargers,so many entries
+	 * 
+	 */
+	public void createYelloPagesRecords() {
 		
 	}
 	

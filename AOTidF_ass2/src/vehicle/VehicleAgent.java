@@ -46,7 +46,7 @@ public class VehicleAgent extends Agent{
 						templateSd.addProperties(new Property("start", "12"));
 						templateSd.addProperties(new Property("end", "14"));
 					}
-					else if (getLocalName().equalsIgnoreCase("VehicleAgent5")) {
+					else if (getLocalName().equalsIgnoreCase("VehicleAgent2")) {
 						templateSd.addProperties(new Property("mode", "fast"));
 						templateSd.addProperties(new Property("start", "14"));
 						templateSd.addProperties(new Property("end", "16"));
