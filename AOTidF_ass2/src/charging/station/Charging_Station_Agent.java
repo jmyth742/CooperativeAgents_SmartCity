@@ -8,6 +8,7 @@ import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAAgentManagement.Property;
 
 /**
  * 
@@ -155,13 +156,13 @@ public class Charging_Station_Agent extends Agent{
 
 	@Override
 	protected void setup() {
-		System.out.println("");
+		//System.out.println("");
 		//System.out.println("Hello, let's create an Agent of Charging Station");
 		ChargingStation(getAID().getLocalName(), 10, 20, 0.5, 0.24);
 	
-		System.out.print("Charging_Station_Agent "+getCSName()+" with" );
-		System.out.println(" ID "+getId()+" is ready." );
-		System.out.println("");
+		//System.out.print("Charging_Station_Agent "+getCSName()+" with" );
+		//System.out.println(" ID "+getId()+" is ready." );
+		//System.out.println("");
 		
 		
 		// Register the charging-points service in the yellow pages
@@ -169,7 +170,24 @@ public class Charging_Station_Agent extends Agent{
 		dfd.setName(getAID());
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Charging-Points");
-		sd.setName(getLocalName()+"-Charging-PointS");
+		if (getId()==1) {
+			sd.setName(getLocalName()+"-Charging-Points");
+			sd.addProperties(new Property("mode", "fast"));
+			sd.addProperties(new Property("start", "12"));
+			sd.addProperties(new Property("end", "14"));
+		}
+		else if (getId()==2) {
+			sd.setName(getLocalName()+"-Charging-Points");
+			sd.addProperties(new Property("mode", "fast"));
+			sd.addProperties(new Property("start", "14"));
+			sd.addProperties(new Property("end", "16"));
+		}
+		else {
+			sd.setName(getLocalName()+"-Charging-Points");
+			sd.addProperties(new Property("mode", "slow"));
+			sd.addProperties(new Property("start", "16"));
+			sd.addProperties(new Property("end", "18"));
+		}
 		dfd.addServices(sd);
 		try {
 		DFService.register(this, dfd);
