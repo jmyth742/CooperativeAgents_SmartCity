@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.concurrent.atomic.AtomicInteger;
 import jade.core.Agent;
+import jade.domain.DFService;
+import jade.domain.FIPAException;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
 
 /**
  * 
@@ -159,8 +163,34 @@ public class Charging_Station_Agent extends Agent{
 		System.out.println(" ID "+getId()+" is ready." );
 		System.out.println("");
 		
+		
+		// Register the charging-points service in the yellow pages
+		DFAgentDescription dfd = new DFAgentDescription();
+		dfd.setName(getAID());
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("Charging-Points");
+		sd.setName(getLocalName()+"-Charging-PointS");
+		dfd.addServices(sd);
+		try {
+		DFService.register(this, dfd);
+		}
+		catch (FIPAException fe) {
+		fe.printStackTrace();
+		}
+		
 		//doDelete();
 		
 	}
+	
+	protected void takeDown() {
+		// Deregister from the yellow pages
+		try {
+		DFService.deregister(this);
+		}
+		catch (FIPAException fe) {
+		fe.printStackTrace();
+		}
+	}
+		
 
 }
