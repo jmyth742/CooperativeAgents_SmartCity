@@ -37,29 +37,32 @@ import java.util.Date;
  */
 public class VehicleAgent extends Agent{
 	//Battery status of the agent
-	private int battery_life;
+	private double battery_life;
 	// Goal to save money "m" or save time "t"
 	private String goal = RandomGoal();
-	private int[][] schedule = new int[23][1];
+	private int[][] schedule = new int[1440-1][1];
 
 	private int nResponders;
 	private int step = 0;
+	private double battery_decay = 0.9905;
 	
 	//Position of the agent
 	
 	//Vehicle Initialization
 	@Override
 	protected void setup() {
+		
 		//Object[] args = getArguments();
 		//String goal = (String) args[0]
 		// msg of created agent
 		//System.out.println("Vehicle Agent "+getAID().getName()+" is ready with goal " + goal);
 	    //System.out.println("Agent "+getLocalName()+" searching for services of type \"Charging-Points\"");
-		
+		battery_life = getRandomNumberInRange(55,90);
+		System.out.println("battery life is:" + battery_life);
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 		nResponders = 2;
 		
-		for(int j=0;j<23;j++) {
+		for(int j=0;j<1440-1;j++) {
 			schedule[j][0] = getRandomNumberInRange(1,3);
 			System.out.print("schedule is "+ schedule[j][0]);
 			System.out.print("\n");
@@ -69,6 +72,20 @@ public class VehicleAgent extends Agent{
 	      {
 	         public void action() 
 	         {
+	        	 battery_life = battery_life * battery_decay;
+	        	 
+	        	 if(battery_life > 80.00) {
+	        		 // pay attention to schedule and go do what needs to be done.
+	        	 }
+	        	 else if (battery_life > 60.00 && battery_life < 80.00) {
+	        		 // pay attention to schedule and go do what needs to be done.
+	        	 }
+	        	 else if (battery_life > 30.00 && battery_life < 60.00) {
+	        		 //forget schedule just go charge
+	        	 }
+	        	 else if (battery_life < 30.00) {
+	        		 //forget schedule just go charge
+	        	 }
 					try {
 						// Build the description used as template for the search
 						DFAgentDescription template = new DFAgentDescription();
@@ -94,36 +111,10 @@ public class VehicleAgent extends Agent{
 	      
 	   }
 		
-		// Check in yellow pages every 5s
-/*		addBehaviour(new TickerBehaviour(this, 5000) {
-			protected void onTick() {
-				try {
-					// Build the description used as template for the search
-					DFAgentDescription template = new DFAgentDescription();
-					ServiceDescription templateSd = new ServiceDescription();
-					templateSd.setType("Charging-Points");
-					createYellowPageEntry(templateSd);
-					template.addServices(templateSd);
-					//SearchConstraints sc = new SearchConstraints();
-					//sc.setMaxResults();
-					
-					DFAgentDescription[] results = DFService.search(this.getAgent(),template);
-					yellowPagesResults(msg,results);
-
-				}
-		        
-				catch (FIPAException fe) {
-					fe.printStackTrace();
-				}
-			}
-		} );
-		}*/
-	
-
-	
+		
 	/**
-	 * random function to return number between 1 and 3 for
-	 * that particular behaviour of car
+	 * random function to return number between min and max for
+	 * different initialisations 
 	 */
 	private static int getRandomNumberInRange(int min, int max) {
 
@@ -300,7 +291,7 @@ public class VehicleAgent extends Agent{
 		return randomgoal;
 	}
 	
-	public int get_battery_life() {
+	public double get_battery_life() {
 		return battery_life;
 	}
 	
