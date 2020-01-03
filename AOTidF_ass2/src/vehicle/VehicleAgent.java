@@ -17,6 +17,7 @@ import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.TickerBehaviour;
+import jade.core.behaviours.CyclicBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -39,8 +40,10 @@ public class VehicleAgent extends Agent{
 	private int battery_life;
 	// Goal to save money "m" or save time "t"
 	private String goal = RandomGoal();
+	private int[][] schedule = new int[23][1];
 
 	private int nResponders;
+	private int step = 0;
 	
 	//Position of the agent
 	
@@ -56,8 +59,43 @@ public class VehicleAgent extends Agent{
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 		nResponders = 2;
 		
+		for(int j=0;j<23;j++) {
+			schedule[j][0] = getRandomNumberInRange(1,3);
+			System.out.print("schedule is "+ schedule[j][0]);
+			System.out.print("\n");
+		}
+		
+	      addBehaviour( new CyclicBehaviour(this) 
+	      {
+	         public void action() 
+	         {
+					try {
+						// Build the description used as template for the search
+						DFAgentDescription template = new DFAgentDescription();
+						ServiceDescription templateSd = new ServiceDescription();
+						templateSd.setType("Charging-Points");
+						createYellowPageEntry(templateSd);
+						template.addServices(templateSd);
+						//SearchConstraints sc = new SearchConstraints();
+						//sc.setMaxResults();
+						//System.out.print("step is now " + step);
+						
+						DFAgentDescription[] results = DFService.search(this.getAgent(),template);
+						yellowPagesResults(msg,results);
+
+					}
+			        
+					catch (FIPAException fe) {
+						fe.printStackTrace();
+					}
+					step++;
+	         }
+	      });
+	      
+	   }
+		
 		// Check in yellow pages every 5s
-		addBehaviour(new TickerBehaviour(this, 5000) {
+/*		addBehaviour(new TickerBehaviour(this, 5000) {
 			protected void onTick() {
 				try {
 					// Build the description used as template for the search
@@ -79,6 +117,22 @@ public class VehicleAgent extends Agent{
 				}
 			}
 		} );
+		}*/
+	
+
+	
+	/**
+	 * random function to return number between 1 and 3 for
+	 * that particular behaviour of car
+	 */
+	private static int getRandomNumberInRange(int min, int max) {
+
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
 	}
 	
 	/** 
@@ -250,6 +304,9 @@ public class VehicleAgent extends Agent{
 		return battery_life;
 	}
 	
+	public int[][] get_schedule() {
+		return schedule;
+	}
 	/**private class ChargingStationRequest extends Behaviour{
 		 
 		@Override
