@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.*;
 import simulation.*;
+import charging.station.*;
 
 import jade.core.Agent;
 import jade.core.AID;
@@ -46,6 +47,7 @@ public class VehicleAgent extends Agent {
 
 	private Field field;
 	public Location location;
+	public Charging_Station_Agent CS;
 
 	public VehicleAgent(Field field, Location location) {
 		this.field = field;
@@ -133,9 +135,6 @@ public class VehicleAgent extends Agent {
 		field.nearestChargingStation(location, 10).getLocation();
 		random_move();
 		
-		
-
-
 	}
 
 	public void fillSchedule(int numofBlocks) {
@@ -318,12 +317,27 @@ public class VehicleAgent extends Agent {
 	public double get_battery_life() {
 		return battery_life;
 	}
+	
+	public void set_battery_life(double new_battery) {
+		battery_life = new_battery;
+	}
+	
+	
+	public boolean checkCharging() {
+		Location CSlocation = CS.getLocation();
+		Location vLocation = getLocation();
+		if(CSlocation == vLocation) {
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * Place the fox at the new location in the given field.
 	 * 
 	 * @param newLocation The fox's new location.
 	 */
+    
 	private void setLocation(Location newLocation) {
 		if (location != null) {
 			field.clear(location);
@@ -332,6 +346,9 @@ public class VehicleAgent extends Agent {
 		field.place(this, newLocation);
 	}
 
+    public Location getLocation() {
+    	return location;
+    }
 	/*
 	 * private class stepBehaviour extends Behaviour{
 	 * 
@@ -371,7 +388,7 @@ public class VehicleAgent extends Agent {
 		int new_row = getRandomNumberInRange(0,29);
 		int s = field.getStreetAt(new_row, new_col);
 		//System.out.println("street at " + s);
-		
+		// this checks we are on a street.
 		if(s == 1) {
 			field.clear(location);
 			//field.place(this, new Location(new_row,new_col));
@@ -395,6 +412,20 @@ public class VehicleAgent extends Agent {
 	 *           }
 	 **/
 	
+	
+	public double time_til_charged(double battery_life, int type) {
+		double slow = 0.8;
+		double fast = 0.2;
+		double time= 0;
+		//0 means fast charge
+		if(type == 0) {
+			time = 100-battery_life / fast;
+		}else {
+			time = 100-battery_life / slow;
+		}
+		
+		return time;
+	}
 	
 	/**
 	 * random function to return number between min and max for different
