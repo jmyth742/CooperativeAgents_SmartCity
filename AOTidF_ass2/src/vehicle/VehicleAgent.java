@@ -3,6 +3,8 @@ package vehicle;
 import java.text.SimpleDateFormat;
 
 import java.util.*;
+
+import charging.station.Charging_Station_Agent;
 import simulation.*;
 
 import jade.core.Agent;
@@ -40,6 +42,7 @@ public class VehicleAgent extends Agent {
 	private int step = 0;
 	private double battery_decay = 0.9905;
 	private int nResponders;
+	
 
 	// Position of the agent
 
@@ -47,12 +50,13 @@ public class VehicleAgent extends Agent {
 	
 	private Field field;
 	public Location location;
+
 	
 	public VehicleAgent(Field field, Location location) {
 		this.field = field;
 		setLocation(location);
 	}
-	
+
 	//Vehicle Initialization
 	@Override
 	protected void setup() {
@@ -65,65 +69,98 @@ public class VehicleAgent extends Agent {
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 		nResponders = 2;
 
-		for (int j = 0; j < 1440 - 1; j++) {
-			schedule[j] = getRandomNumberInRange(1, 2);
-		}
-
-		addBehaviour(new CyclicBehaviour(this) {
-			public void action() {
-				battery_life = battery_life * battery_decay;
-				System.out.println("battery life is:" + battery_life);
-				int job = schedule[step];
-				if (battery_life > 80.00) {
-					// pay attention to schedule and go do what needs to be done.
-
-					if(job == 1) {
-						System.out.println("random moving");
-						//Random_move()
-					}else {
-						System.out.println("just chilling");
-						//chill()
-					}
-					fillSchedule(8);			
-				}
-				// else if (battery_life > 60.00 && battery_life < 80.00) {
-				// pay attention to schedule and go do what needs to be done.
-				// }
-				else if (battery_life > 30.00 && battery_life < 80.00) {
-					// forget schedule just go charge
-					// here we want to do a cfp for a charging spot
-					// based on our position and our goals.
-					  try { // Build the description used as template for the search
-						  DFAgentDescription template = new DFAgentDescription(); ServiceDescription
-						  templateSd = new ServiceDescription(); templateSd.setType("Charging-Points");
-						  createYellowPageEntry(templateSd); template.addServices(templateSd);
-						  //SearchConstraints sc = new SearchConstraints(); //sc.setMaxResults();
-						  //System.out.print("step is now " + step);
-						  
-						  DFAgentDescription[] results = DFService.search(this.getAgent(),template);
-						  yellowPagesResults(msg,results);
-						  
-						  }
-						  
-						  catch (FIPAException fe) { fe.printStackTrace(); }
+		fillSchedule(4);
+		
+		
+		// Check in yellow pages every 5s
+		addBehaviour(new TickerBehaviour(this, 1000000) {
+			protected void onTick() {
+				try {
+					// Build the description used as template for the search
+					DFAgentDescription template = new DFAgentDescription();
+					ServiceDescription sd = new ServiceDescription();
+					sd.setType("Charging-Points");
+					createYellowPageEntry(sd, 1);
+					template.addServices(sd);
+					//SearchConstraints sc = new SearchConstraints();
+					//sc.setMaxResults();
 					
-				} else if (battery_life < 30.00) {
-					get_job(job);
-					System.out.println("Battery dangerously low, go charge now!");
-					// forget schedule just go charge
-					//move_to_charging_station()
+					DFAgentDescription[] results = DFService.search(this.getAgent(),template);
+//					yellowPagesResults(msg,results);
+
 				}
-				 
-				step++;
+		        
+				catch (FIPAException fe) {
+					fe.printStackTrace();
+				}
 			}
-		});
+		} );
+
+//		addBehaviour(new CyclicBehaviour(this) {
+//			public void action() {
+//				battery_life = battery_life * battery_decay;
+//				System.out.println("battery life is:" + battery_life);
+//				int job = schedule[step];
+//				if (battery_life > 80.00) {
+//					// pay attention to schedule and go do what needs to be done.
+//
+//					if(job == 1) {
+//						System.out.println("random moving");
+//						//Random_move()
+//					}else {
+//						System.out.println("just chilling");
+//						//chill()
+//					}
+//					fillSchedule(8);			
+//				}
+//				// else if (battery_life > 60.00 && battery_life < 80.00) {
+//				// pay attention to schedule and go do what needs to be done.
+//				// }
+//				else if (battery_life > 30.00 && battery_life < 80.00) {
+//					// forget schedule just go charge
+//					// here we want to do a cfp for a charging spot
+//					// based on our position and our goals.
+//					  try { // Build the description used as template for the search
+//						  DFAgentDescription template = new DFAgentDescription(); ServiceDescription
+//						  templateSd = new ServiceDescription(); templateSd.setType("Charging-Points");
+//						  createYellowPageEntry(templateSd, 2); 
+//						  template.addServices(templateSd);
+//						  //SearchConstraints sc = new SearchConstraints(); //sc.setMaxResults();
+//						  //System.out.print("step is now " + step);
+//						  
+//						  DFAgentDescription[] results = DFService.search(this.getAgent(),template);
+//						  yellowPagesResults(msg,results);
+//						  
+//						  }
+//						  
+//						  catch (FIPAException fe) { fe.printStackTrace(); }
+//					
+//				} else if (battery_life < 30.00) {
+//					get_job(job);
+//					System.out.println("Battery dangerously low, go charge now!");
+//					// forget schedule just go charge
+//					//move_to_charging_station()
+//				}
+//				 
+//				step++;
+//			}
+//		});
 
 	}
 	
 	public void step() {
 
-		field.nearestChargingStation(location, 10).getLocation();
 		
+
+//	    Location dest = new Location(0, 0); 
+//	  
+//	    int dist = field.BFS(location, dest); 
+//	  
+//	    if (dist != Integer.MAX_VALUE) 
+//	        System.out.println("Shortest Path is " + dist); 
+//	    else
+//	        System.out.println("Shortest Path doesn't exist"); 
+//		
 //		field.clear(location);
 //		
 //		int row = getRandomNumberInRange(0,25);
@@ -132,7 +169,8 @@ public class VehicleAgent extends Agent {
 //		Location newLocation = new Location(row, col);
 //		field.place(this, newLocation);
 //		setLocation(newLocation);
-		
+
+
 	}
 	
 	
@@ -143,13 +181,13 @@ public class VehicleAgent extends Agent {
 		for(int i = 0; i < numofBlocks; i++) {
 			int temp = (int) getRandomNumberInRange(start, (end / numofBlocks) * (i+1)); 
 			
-			int value = getRandomNumberInRange(1, 3);
+			int value = getRandomNumberInRange(1, 2);
 			
 			Arrays.fill(schedule, start, temp, value);
 			start = temp;
 		}
 		
-		Arrays.fill(schedule,start, end, 3);
+		Arrays.fill(schedule,start, end, 2);
 	}
 	
 	/**
@@ -172,23 +210,30 @@ public class VehicleAgent extends Agent {
 	 * : the one of the available time-slot for charging (12-14,14-16) booked: no :
 	 * we want only free place
 	 */
-	public void createYellowPageEntry(ServiceDescription sd) {
+	public void createYellowPageEntry(ServiceDescription sd, int numofCS) {
+
+		System.out.println("VehicleAgent " + getLocalName() + " provide Service");
+//		List<Charging_Station_Agent> nearestCS = field.nearestChargingStation(location, numofCS);
 		
+//		Property mode_m = new Property("mode", "slow");
+//		Property mode_t = new Property("mode", "fast");
+//
+////		for(int i =0; i<numofCS; i++) {
+//			if(this.goal.equalsIgnoreCase("m")) {
+//				System.out.println("Agent: " + getLocalName() + " is looking for a slow charger.");
+//				sd.addProperties(mode_m);		
+////				sd.addProperties(new Property("location", nearestCS.get(i).getLocation()));
+//			}
+//			else if (this.goal.equalsIgnoreCase("t")) {
+//				System.out.println("Agent: " + getLocalName() + " is looking for a fast charger.");
+//				sd.addProperties(mode_t);
+////				sd.addProperties(new Property("location", nearestCS.get(i).getLocation()));
+//			}
+//			else {
+//				System.out.println("Agent: " + getLocalName() + " has no goal defined.");
+//			}
 		
-		Property mode_m = new Property("mode", "slow");
-		Property mode_t = new Property("mode", "fast");
-		
-		if(this.goal.equalsIgnoreCase("m")) {
-			System.out.println("Agent: " + getLocalName() + " is looking for a slow charger.");
-			sd.addProperties(mode_m);
-		}
-		else if (this.goal.equalsIgnoreCase("t")) {
-			System.out.println("Agent: " + getLocalName() + " is looking for a fast charger.");
-			sd.addProperties(mode_t);
-		}
-		else {
-			System.out.println("Agent: " + getLocalName() + " has no goal defined.");
-		}
+//		}
 	}
 
 	/**
@@ -391,17 +436,4 @@ public class VehicleAgent extends Agent {
 
 		}
 	}
-	/**
-	 * private class ChargingStationRequest extends Behaviour{
-	 * 
-	 * @Override public void action() { // TODO Auto-generated method stub
-	 * 
-	 *           }
-	 * 
-	 * @Override public boolean done() { // TODO Auto-generated method stub return
-	 *           false; }
-	 * 
-	 *           }
-	 **/
-//end of class 
 }

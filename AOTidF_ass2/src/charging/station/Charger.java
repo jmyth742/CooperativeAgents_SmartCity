@@ -9,19 +9,18 @@ import simulation.Location;
 
 
 /**
- * 
- * @author anoulis
- * TODO
- * The charging event should be linked to the charger.
- * The charger depending on type should determine the charging time from % to %.
- * Maybe also the cost.
+ * @author Aristeidis Noulis, Jonathan Smyth, Cesar Gonzalez, Veranika Paulava
+ * Each ChargingStationAgent has a different number of Chargers and different types of chargers
+ * We have fast and slow chargers.
  * 
  *
  */
 
 public class Charger {	
     private int id;
+    //What kind of charging station - fast or slow
     private final String kindOfCharging;
+    
     private String name;
     private ChargingEvent e;
     private Charging_Station_Agent station;
@@ -29,7 +28,7 @@ public class Charger {
     final ArrayList<Long> planTime = new ArrayList<>();
     private static final AtomicInteger idGenerator = new AtomicInteger(0);
 
-    //For simulation
+    //For simulation know the field and the location (row, col) of each charger
     private Field field;
     private Location location;
     /**
@@ -73,6 +72,11 @@ public class Charger {
         return e;
     }
     
+    /**
+     * 
+     * @param newLocation
+     * set the Location of each charger as long a there is no other Agent positioned.
+     */
 
     public void setLocation(Location newLocation)
     {
@@ -83,6 +87,11 @@ public class Charger {
         field.place(this, newLocation);
     }
     
+    /**
+     * 
+     * @param field
+     * set the field of the charging station for the simulation
+     */
     public void setField( Field field) {
     	this.field = field;
     }

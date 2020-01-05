@@ -6,34 +6,37 @@ import jade.wrapper.ContainerController;
 
 import simulation.*;
 
+/**
+ * 
+ * @author Aristeidis Noulis, Jonathan Smyth, Cesar Gonzalez, Veranika Paulava
+ * 
+ * Main Class creates a JADE Main Container and a 2D Simulation grid
+ * Assignment2: Cooperative Electric Vehicles in the Electric Grid 
+ *
+ */
 public class Main {
 	
-	private final static int NUM_OF_CS = 10;
-	private final static int NUM_OF_V = 1;
+	//number of ChargingStation
+	private final static int NUM_OF_CS = 2;
+	//number of Vehicle agents
+	private final static int NUM_OF_V = 5;
 
+	//depth and width of the simulation window
 	private final static int DEPTH = 30;
 	private final static int WIDTH = 30;
-	/**
-	 * @param args
-	 * The core code for yellow pages is done.Should be expanded.
-	 * After that the assignments should be done.
-	 * The simple examples logic is that:
-	 * We have 3 Vehicles and 3 Stations.
-	 * We do initializations
-	 * We assign the bookings 
-	 * As the time passes and one car wants to charge again search and negotiate
-	 * @throws InterruptedException 
-	 * 
-	 */
+	
 	public static void main(String [] args){
 		Runtime rt = Runtime.instance();
 		Profile p = new ProfileImpl();
 		p.setParameter(Profile.MAIN_HOST, "localhost");
-//		p.setParameter(Profile.GUI, "true");
 		ContainerController cc = rt.createMainContainer(p);
 		
+		//Start SImulation
 		Simulator simulator = new Simulator(DEPTH, WIDTH, cc, NUM_OF_CS, NUM_OF_V);
-		simulator.simulate(1);
+		
+		//number of steps to simulate
+		int numofSteps = 1;
+		simulator.simulate(numofSteps);
 		
 		
 	}

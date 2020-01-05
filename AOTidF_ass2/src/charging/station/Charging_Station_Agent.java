@@ -177,8 +177,15 @@ public class Charging_Station_Agent extends Agent{
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Charging-Points");
 		
-		
-		
+//		
+//		for(int i = 0; i < chargers.size(); i++) {
+//
+//			sd.setName(getLocalName()+"-Charging-Points");
+//			sd.addProperties(new Property("mode", chargers.get(i).getKindOfCharging()));
+//			sd.addProperties(new Property("location", this.getLocation()));
+//			
+//		}
+//		
 		// this should be completely changed, to be iterative
 		
 		if (getId()==1) {

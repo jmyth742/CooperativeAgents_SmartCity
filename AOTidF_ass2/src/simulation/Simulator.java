@@ -110,7 +110,7 @@ public class Simulator {
     private void createVertStreets(int n) {
     	for(int row = 0; row < field.getDepth(); row++) {
     		for( int col = 0; col < field.getWidth(); col++) {
-    			if((col%n) == 0) {
+    			if((col%n) == 0 || (row%n) == 0) {
     				field.setStreet(row, col);
     				streets.add(new Location(row, col));
     			}
