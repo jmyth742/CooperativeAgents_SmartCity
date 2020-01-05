@@ -16,8 +16,7 @@ public class Simulator {
 	private static final int DEFAULT_DEPTH = 50;
 	
 	private int numofV = 10;
-	private int numofCS = 100;
-	
+	private int numofCS = 100;	
 	
 	private List<VehicleAgent> vehicles;
 	private List<Charging_Station_Agent> chargingStations;
@@ -115,7 +114,7 @@ public class Simulator {
 			vehicles.get(i).step();
 		}
 		view.showStatus(step, field);
-		System.out.println("****************** PAOK **********************");
+		
 	}
 	    
     private void createVertStreets(int n) {

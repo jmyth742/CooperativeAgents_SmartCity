@@ -68,6 +68,7 @@ public class Field
         field[location.getRow()][location.getCol()] = null;
     }
     
+    
     /**
      * Place an animal at the given location.
      * If there is already an animal at the location it will

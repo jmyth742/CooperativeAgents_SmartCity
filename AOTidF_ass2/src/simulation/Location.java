@@ -3,8 +3,8 @@ package simulation;
 public class Location
 {
     // Row and column positions.
-    private int row;
-    private int col;
+    public int row;
+    public int col;
 
     /**
      * Represent a row and column.
@@ -66,4 +66,6 @@ public class Location
     {
         return col;
     }
+    
+    
 }
