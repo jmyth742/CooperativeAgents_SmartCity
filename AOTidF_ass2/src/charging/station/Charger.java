@@ -1,7 +1,11 @@
 package charging.station;
 
 import java.util.ArrayList;
+
 import java.util.concurrent.atomic.AtomicInteger;
+
+import simulation.Field;
+import simulation.Location;
 
 
 /**
@@ -25,6 +29,9 @@ public class Charger {
     final ArrayList<Long> planTime = new ArrayList<>();
     private static final AtomicInteger idGenerator = new AtomicInteger(0);
 
+    //For simulation
+    private Field field;
+    private Location location;
     /**
      * Creates a new Charger instance.
      * @param stat The ChargingStation object the Charger is linked with.
@@ -35,14 +42,6 @@ public class Charger {
         this.kindOfCharging = kindOfCharging;
         this.station = station;
         this.name = "Charger" + String.valueOf(id);
-    }
-    
-    /**
-     * Sets a name for the Charger.
-     * @param nam The name to be set.
-     */
-    public void setName(final String nam) {
-        this.name = name;
     }
 
     /**
@@ -74,11 +73,19 @@ public class Charger {
         return e;
     }
     
-    public void startCharger() {
-    	
+
+    public void setLocation(Location newLocation)
+    {
+        if(location != null) {
+            field.clear(location);
+        }
+        location = newLocation;
+        field.place(this, newLocation);
     }
-
-
+    
+    public void setField( Field field) {
+    	this.field = field;
+    }
     
     
 
