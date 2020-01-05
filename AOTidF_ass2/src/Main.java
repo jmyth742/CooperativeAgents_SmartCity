@@ -33,6 +33,7 @@ public class Main {
 		ContainerController cc = rt.createMainContainer(p);
 		
 		Simulator simulator = new Simulator(DEPTH, WIDTH, cc, NUM_OF_CS, NUM_OF_V);
+		simulator.preBookings();
 		simulator.simulate(1);
 		
 		
