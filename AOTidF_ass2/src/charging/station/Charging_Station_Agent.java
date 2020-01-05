@@ -1,11 +1,12 @@
 package charging.station;
 
 import java.util.ArrayList;
-
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
+import simulation.Field;
+import simulation.Location;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
@@ -23,6 +24,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.domain.FIPAAgentManagement.Property;
 
+import simulation.*;
 /**
  * 
  * @author anoulis
@@ -61,9 +63,15 @@ public class Charging_Station_Agent extends Agent{
     //private Timer timer;
     private double chargingRateFast;
     private double chargingRateSlow;
-    //private ArrayList<Charger> chargers;
+    public ArrayList<Charger> chargers;
     //final ArrayList<ChargingEvent> events = new ArrayList<>();
     //final ArrayList<Integer> numberOfChargers = new ArrayList<>();
+    private int[][] shedule;
+    
+
+    //For simulation
+    private Field field;
+    private Location location;
     
     /**
      * Creates a new ChargingStation instance. It sets the handling of the queue to automatic, as well. The fast charging rate,
@@ -74,20 +82,19 @@ public class Charging_Station_Agent extends Agent{
      * @param fastPrice The price for fast charging.
      * @param slowPrice The price for slow charging.
      */
-    public void ChargingStation(final String name, final int fastChargers, final int slowChargers, final double fastPrice, final double slowPrice ) {
+    public void ChargingStation(Field field, final int fastChargers, final int slowChargers, final double slowPrice ) {
+    	this.field = field;
     	this.id = idGenerator.incrementAndGet();
-        this.name = name;
         this.fastChargers = fastChargers;
         this.slowChargers = slowChargers;
-        this.unitPriceFast = fastPrice;
+        this.unitPriceFast = 2 * slowPrice;
         this.unitPriceSlow = slowPrice;
         this.chargingRateFast = 0.02;
         this.chargingRateSlow = 0.01;
-        /*
-         * ********IGNORE FOR NOW********
-        this.automaticQueueHandling = true;
-        this.fastBookingList = new BookingList<>();
-        this.slowBookingList= new BookingList<>();
+        
+//        this.automaticQueueHandling = true;
+//        this.fastBookingList = new BookingList<>();
+//        this.slowBookingList= new BookingList<>();
         this.chargers = new ArrayList<>();
 
         for (int i=0; i<fastChargers;i++) {
@@ -97,16 +104,12 @@ public class Charging_Station_Agent extends Agent{
         for (int i=0; i<slowChargers;i++) {
         	chargers.add(new Charger(this, "slow"));	
         }
-        */
+        
+
+        //shedule table: for each minute we have informations of all chargers if they are free or not
+        this.shedule = new int[fastChargers + slowChargers][24 * 60];
     }
-    
-    /**
-     * @return The Name of the ChargingStation.
-     */
-    public String getCSName() {
-        return this.name;
-    }
-    
+        
     /**
      * Sets a name to the ChargingStation.
      * @param nam The name to be set.
@@ -135,9 +138,6 @@ public class Charging_Station_Agent extends Agent{
 		//System.out.println("");
 		//System.out.println("Hello, let's create an Agent of Charging Station");
 		
-		// Let's consider only 2 chargers(1 fast, 1 slow) for every station at first point.
-		ChargingStation(getAID().getLocalName(), 1, 1, 0.5, 0.24);
-		
 		// Register the charging-points service in the yellow pages
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
@@ -145,7 +145,7 @@ public class Charging_Station_Agent extends Agent{
 		
 		
 		// Initialization for the call for proposals (cfp)
-		System.out.println("Agent "+getLocalName()+" waiting for CFP...");
+		System.out.println("Agent "+getLocalName()+ " at loction: " + location.toString() +" is waiting for CFP...");
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
 				MessageTemplate.MatchPerformative(ACLMessage.CFP) );
@@ -176,6 +176,8 @@ public class Charging_Station_Agent extends Agent{
 	public void yellowPagesIndex (DFAgentDescription dfd) {
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Charging-Points");
+		
+		
 		
 		// this should be completely changed, to be iterative
 		
@@ -290,7 +292,26 @@ public class Charging_Station_Agent extends Agent{
 		}
 	}
 	
-	
+    /**
+     * Place the fox at the new location in the given field.
+     * @param newLocation The fox's new location.
+     */
+    public void setLocation(Location newLocation)
+    {
+        if(location != null) {
+            field.clear(location);
+        }
+        location = newLocation;
+        field.place(this, newLocation);
+    }
+    
+    public Location getLocation() {
+    	return location;
+    }
+    
+    public void setField( Field field) {
+    	this.field = field;
+    }
     
     /**
      * ********IGNORE FOR NOW********
