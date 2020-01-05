@@ -76,7 +76,14 @@ public class VehicleAgent extends Agent {
 				int job = schedule[step];
 				if (battery_life > 80.00) {
 					// pay attention to schedule and go do what needs to be done.
-					get_job(job);
+
+					if(job == 1) {
+						System.out.println("random moving");
+						//Random_move()
+					}else {
+						System.out.println("just chilling");
+						//chill()
+					}
 					fillSchedule(8);			
 				}
 				// else if (battery_life > 60.00 && battery_life < 80.00) {
@@ -84,7 +91,8 @@ public class VehicleAgent extends Agent {
 				// }
 				else if (battery_life > 30.00 && battery_life < 80.00) {
 					// forget schedule just go charge
-					 get_job(job);
+					// here we want to do a cfp for a charging spot
+					// based on our position and our goals.
 					  try { // Build the description used as template for the search
 						  DFAgentDescription template = new DFAgentDescription(); ServiceDescription
 						  templateSd = new ServiceDescription(); templateSd.setType("Charging-Points");
@@ -101,6 +109,7 @@ public class VehicleAgent extends Agent {
 					
 				} else if (battery_life < 30.00) {
 					get_job(job);
+					System.out.println("Battery dangerously low, go charge now!");
 					// forget schedule just go charge
 					//move_to_charging_station()
 				}
