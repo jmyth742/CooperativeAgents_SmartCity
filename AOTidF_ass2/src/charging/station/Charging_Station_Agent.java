@@ -217,6 +217,7 @@ public class Charging_Station_Agent extends Agent{
 			@Override
 			protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
 				System.out.println("Agent "+getLocalName()+": CFP received from "+cfp.getSender().getLocalName()+". Action is "+cfp.getContent());
+				System.out.println("inside the contract net class, handleCFP");
 				int proposal = evaluateAction();
 				proposal = proposal + 2;
 				if (proposal > 2) {
@@ -264,6 +265,9 @@ public class Charging_Station_Agent extends Agent{
 	 */
 	private int evaluateAction() {
 		// Simulate an evaluation by generating a random number
+		// here we want to take into consideration the following,
+		//position and cost of time for charging
+		
 		return (int) (Math.random() * 10);
 	}
 
