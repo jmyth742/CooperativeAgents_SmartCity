@@ -37,8 +37,7 @@ public class VehicleAgent extends Agent {
 	// Goal to save money "m" or save time "t"
 	private String goal = RandomGoal();
 
-	
-	private int[] schedule = new int[(24*60) -1];
+	private int[] schedule = new int[(24 * 60) - 1];
 	private int step = 0;
 	private double battery_decay = 0.9905;
 	private int nResponders;
@@ -47,28 +46,37 @@ public class VehicleAgent extends Agent {
 	// Position of the agent
 
 	// Vehicle Initialization
-	
+
 	private Field field;
 	public Location location;
 
+<<<<<<< HEAD
 	
+=======
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 	public VehicleAgent(Field field, Location location) {
 		this.field = field;
 		setLocation(location);
 	}
 
+<<<<<<< HEAD
 	//Vehicle Initialization
+=======
+	// Vehicle Initialization
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 	@Override
 	protected void setup() {
 
-		battery_life = getRandomNumberInRange(55, 90);		
-		System.out.println("Vehicle Agent "+ getLocalName() +" is ready with goal " + goal + " and location " + location.toString());
-	    
+		battery_life = getRandomNumberInRange(70, 90);
+		System.out.println("Vehicle Agent " + getLocalName() + " is ready with goal " + goal + " and location "
+				+ location.toString());
+
 		System.out.println("battery life is:" + battery_life);
-		
+
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 		nResponders = 2;
 
+<<<<<<< HEAD
 		fillSchedule(4);
 		
 		
@@ -93,6 +101,66 @@ public class VehicleAgent extends Agent {
 				catch (FIPAException fe) {
 					fe.printStackTrace();
 				}
+=======
+		for (int j = 0; j < 1440 - 1; j+=20) {
+			schedule[j] = getRandomNumberInRange(1, 2);
+		}
+
+		addBehaviour(new CyclicBehaviour(this) {
+			public void action() {
+				battery_life = battery_life * battery_decay;
+				//System.out.println("battery life is:" + battery_life);
+				int job = schedule[step];
+				if(step == 1438) {
+					step = 0;
+				}
+				//random_move();
+				if (battery_life > 80.00) {
+					// pay attention to schedule and go do what needs to be done.
+
+					if (job == 1) {
+						System.out.println("random moving");
+						// Random_move()
+					} else {
+						System.out.println("just chilling");
+						// chill()
+					}
+					fillSchedule(8);
+				}
+				// else if (battery_life > 60.00 && battery_life < 80.00) {
+				// pay attention to schedule and go do what needs to be done.
+				// }
+				else if (battery_life > 30.00 && battery_life < 80.00) {
+					// forget schedule just go charge
+					// here we want to do a cfp for a charging spot
+					// based on our position and our goals.
+					try { // Build the description used as template for the search
+						DFAgentDescription template = new DFAgentDescription();
+						ServiceDescription templateSd = new ServiceDescription();
+						templateSd.setType("Charging-Points");
+						createYellowPageEntry(templateSd);
+						template.addServices(templateSd);
+						// SearchConstraints sc = new SearchConstraints(); //sc.setMaxResults();
+						// System.out.print("step is now " + step);
+
+						DFAgentDescription[] results = DFService.search(this.getAgent(), template);
+						yellowPagesResults(msg, results);
+
+					}
+
+					catch (FIPAException fe) {
+						fe.printStackTrace();
+					}
+
+				} else if (battery_life < 30.00) {
+					get_job(job);
+					System.out.println("Battery dangerously low, go charge now!");
+					// forget schedule just go charge
+					// move_to_charging_station()
+				}
+
+				step++;
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 			}
 		} );
 
@@ -147,9 +215,10 @@ public class VehicleAgent extends Agent {
 //		});
 
 	}
-	
+
 	public void step() {
 
+<<<<<<< HEAD
 		
 
 //	    Location dest = new Location(0, 0); 
@@ -169,14 +238,20 @@ public class VehicleAgent extends Agent {
 //		Location newLocation = new Location(row, col);
 //		field.place(this, newLocation);
 //		setLocation(newLocation);
+=======
+		field.nearestChargingStation(location, 10).getLocation();
+		random_move();
+		
+		
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 
 
 	}
-	
-	
+
 	public void fillSchedule(int numofBlocks) {
 		int start = 0;
 		int end = schedule.length;
+<<<<<<< HEAD
 		
 		for(int i = 0; i < numofBlocks; i++) {
 			int temp = (int) getRandomNumberInRange(start, (end / numofBlocks) * (i+1)); 
@@ -195,13 +270,22 @@ public class VehicleAgent extends Agent {
 	 * different initialisations 
 	 */
 	private static int getRandomNumberInRange(int min, int max) {
+=======
 
-		if (min >= max) {
-			throw new IllegalArgumentException("max must be greater than min");
+		for (int i = 0; i < numofBlocks; i++) {
+			int temp = (int) getRandomNumberInRange(start, (end / numofBlocks) * (i + 1));
+
+			int value = getRandomNumberInRange(1, 3);
+
+			Arrays.fill(schedule, start, temp, value);
+			start = temp;
 		}
-		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
+
+		Arrays.fill(schedule, start, end, 3);
 	}
+
+
 
 	/**
 	 * Function to do the Registrations in Yellow Pages for every vehicle agent. It
@@ -210,6 +294,7 @@ public class VehicleAgent extends Agent {
 	 * : the one of the available time-slot for charging (12-14,14-16) booked: no :
 	 * we want only free place
 	 */
+<<<<<<< HEAD
 	public void createYellowPageEntry(ServiceDescription sd, int numofCS) {
 
 		System.out.println("VehicleAgent " + getLocalName() + " provide Service");
@@ -234,6 +319,22 @@ public class VehicleAgent extends Agent {
 //			}
 		
 //		}
+=======
+	public void createYellowPageEntry(ServiceDescription sd) {
+
+		Property mode_m = new Property("mode", "slow");
+		Property mode_t = new Property("mode", "fast");
+
+		if (this.goal.equalsIgnoreCase("m")) {
+			System.out.println("Agent: " + getLocalName() + " is looking for a slow charger.");
+			sd.addProperties(mode_m);
+		} else if (this.goal.equalsIgnoreCase("t")) {
+			System.out.println("Agent: " + getLocalName() + " is looking for a fast charger.");
+			sd.addProperties(mode_t);
+		} else {
+			System.out.println("Agent: " + getLocalName() + " has no goal defined.");
+		}
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 	}
 
 	/**
@@ -345,7 +446,7 @@ public class VehicleAgent extends Agent {
 
 			private void assignment() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			protected void handleInform(ACLMessage inform) {
@@ -355,15 +456,12 @@ public class VehicleAgent extends Agent {
 		});
 	}
 
-
 	public VehicleAgent getAgent(String name) {
-		if(name == this.getName()) {
+		if (name == this.getName()) {
 			return this;
 		}
 		return null;
 	}
-	
-	
 
 	// Generates with 80% probability goal as "save money" (= "m")
 	// and with 20% probability goal to "save time" (= "t")
@@ -379,47 +477,36 @@ public class VehicleAgent extends Agent {
 		return battery_life;
 	}
 
-    /**
-     * Place the fox at the new location in the given field.
-     * @param newLocation The fox's new location.
-     */
-    private void setLocation(Location newLocation)
-    {
-        if(location != null) {
-            field.clear(location);
-        }
-        location = newLocation;
-        field.place(this, newLocation);
-    }
-	
-/*	private class stepBehaviour extends Behaviour{
-		 
-		@Override
-		public void action() {
-			battery_life = (int) (battery_life * battery_decay);
-       	 
-       	 	if(battery_life > 80.00) {
-       	 		// pay attention to schedule and go do what needs to be done.
-       	 	}
-       	 	else if (battery_life > 60.00 && battery_life < 80.00) {
-	       		 // pay attention to schedule and go do what needs to be done.
-	       	 }
-	       	 else if (battery_life > 30.00 && battery_life < 60.00) {
-	       		 //forget schedule just go charge
-	       	 }
-	       	 else if (battery_life < 30.00) {
-	       		 //forget schedule just go charge
-	       	 }
-			
+	/**
+	 * Place the fox at the new location in the given field.
+	 * 
+	 * @param newLocation The fox's new location.
+	 */
+	private void setLocation(Location newLocation) {
+		if (location != null) {
+			field.clear(location);
 		}
+		location = newLocation;
+		field.place(this, newLocation);
+	}
 
-		@Override
-		public boolean done() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		}
-*/
+	/*
+	 * private class stepBehaviour extends Behaviour{
+	 * 
+	 * @Override public void action() { battery_life = (int) (battery_life *
+	 * battery_decay);
+	 * 
+	 * if(battery_life > 80.00) { // pay attention to schedule and go do what needs
+	 * to be done. } else if (battery_life > 60.00 && battery_life < 80.00) { // pay
+	 * attention to schedule and go do what needs to be done. } else if
+	 * (battery_life > 30.00 && battery_life < 60.00) { //forget schedule just go
+	 * charge } else if (battery_life < 30.00) { //forget schedule just go charge }
+	 * 
+	 * }
+	 * 
+	 * @Override public boolean done() { // TODO Auto-generated method stub return
+	 * false; } }
+	 */
 
 	public void get_job(int job) {
 		switch (job) {
@@ -430,10 +517,57 @@ public class VehicleAgent extends Agent {
 			break;
 		case 2:
 			System.out.println("Do Nothing -- chill");
-			//here nothing is happening.
+			// here nothing is happening.
 			break;
-			
 
 		}
 	}
+<<<<<<< HEAD
+=======
+
+	
+	public void random_move() {
+		int new_col = getRandomNumberInRange(0,29);
+		int new_row = getRandomNumberInRange(0,29);
+		int s = field.getStreetAt(new_row, new_col);
+		//System.out.println("street at " + s);
+		
+		if(s == 1) {
+			field.clear(location);
+			//field.place(this, new Location(new_row,new_col));
+			Location newLocation = new Location(new_row, new_col);
+			field.place(this, newLocation);
+			setLocation(newLocation);
+		}
+	}
+
+	
+	/**
+	 * private class ChargingStationRequest extends Behaviour{
+	 * 
+	 * @Override public void action() { // TODO Auto-generated method stub
+	 * 
+	 *           }
+	 * 
+	 * @Override public boolean done() { // TODO Auto-generated method stub return
+	 *           false; }
+	 * 
+	 *           }
+	 **/
+	
+	
+	/**
+	 * random function to return number between min and max for different
+	 * initialisations
+	 */
+	private static int getRandomNumberInRange(int min, int max) {
+
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
+//end of class 
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 }

@@ -84,6 +84,7 @@ public class Field
         field[location.getRow()][location.getCol()] = null;
     }
     
+    
     /**
      * Place an agent at the given location.
      * If there is already an agent at the location it will

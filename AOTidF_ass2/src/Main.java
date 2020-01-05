@@ -33,10 +33,15 @@ public class Main {
 		
 		//Start SImulation
 		Simulator simulator = new Simulator(DEPTH, WIDTH, cc, NUM_OF_CS, NUM_OF_V);
+<<<<<<< HEAD
 		
 		//number of steps to simulate
 		int numofSteps = 1;
 		simulator.simulate(numofSteps);
+=======
+		simulator.preBookings();
+		simulator.simulate(100);
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 		
 		
 	}

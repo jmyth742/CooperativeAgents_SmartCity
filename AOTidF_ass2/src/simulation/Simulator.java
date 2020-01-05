@@ -16,8 +16,7 @@ public class Simulator {
 	private static final int DEFAULT_DEPTH = 50;
 	
 	private int numofV = 10;
-	private int numofCS = 100;
-	
+	private int numofCS = 100;	
 	
 	private List<VehicleAgent> vehicles;
 	private List<Charging_Station_Agent> chargingStations;
@@ -94,8 +93,18 @@ public class Simulator {
         for(int step=1; step <= numSteps; step++) {
 
         	simulateOneStep();
-             delay(60);   // uncomment this to run more slowly
+            delay(60);   // uncomment this to run more slowly
         }
+    }
+    /**
+     * all the pre-Bookings before the simulation
+     */
+    public void preBookings() {
+    	System.out.println("Prebookings .......");
+    	System.out.println("Number of Vehicles Agents " +  vehicles.size());
+    	System.out.println("Number of Stations Agents " +  chargingStations.size());
+    	
+    	
     }
 	
 	public void simulateOneStep() {
@@ -105,6 +114,7 @@ public class Simulator {
 			vehicles.get(i).step();
 		}
 		view.showStatus(step, field);
+		
 	}
 	    
     private void createVertStreets(int n) {
@@ -137,6 +147,7 @@ public class Simulator {
     		if(field.getObjectAt(randomLocation) == null) {
         		VehicleAgent vehicle = new VehicleAgent(field, randomLocation);
         		vehicles.add(vehicle);
+        		
        
         		try {
         			ac = cc.acceptNewAgent("VehicleAgent" + i, vehicle);
@@ -145,6 +156,7 @@ public class Simulator {
         			System.out.println("Could not create Agent!");
         			e.printStackTrace();
         		}
+        		
     		}
     	}
 	}
@@ -157,6 +169,8 @@ public class Simulator {
     		
     		int fastChargers = random.nextInt(6) + 1; //between 1-5 fast charger
     		int slowChargers = random.nextInt(15) + 5; // between 5 - 15 slow charger
+    		//slowChargers = 0;
+    		//fastChargers = 1;
     		
     		double slowPrice = 2.00 + (1.00) * random.nextDouble(); // price between 1.00 - 2.00
     		
@@ -191,6 +205,7 @@ public class Simulator {
     			col++;
     		}
     		
+    		
     		try {
     			ac = cc.acceptNewAgent("CSAgent" + i, chargingStation);
     			ac.start();
@@ -198,6 +213,7 @@ public class Simulator {
     			System.out.println("Could not create Agent!");
     			e.printStackTrace();
     		}
+    		
 
     		chargingStations.add(chargingStation);
     	}

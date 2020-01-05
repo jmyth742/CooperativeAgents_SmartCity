@@ -7,6 +7,7 @@ import jade.lang.acl.MessageTemplate;
 import jade.proto.ContractNetResponder;
 import simulation.Field;
 import simulation.Location;
+import vehicle.VehicleAgent;
 import jade.domain.FIPANames;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
 import jade.domain.FIPAAgentManagement.RefuseException;
@@ -64,7 +65,7 @@ public class Charging_Station_Agent extends Agent{
     private double chargingRateFast;
     private double chargingRateSlow;
     public ArrayList<Charger> chargers;
-    //final ArrayList<ChargingEvent> events = new ArrayList<>();
+    public ArrayList<ChargingEvent> chargingEvents = new ArrayList<>();
     //final ArrayList<Integer> numberOfChargers = new ArrayList<>();
     private int[][] shedule;
     
@@ -117,6 +118,16 @@ public class Charging_Station_Agent extends Agent{
     public void setName(final String name){
         this.name = name;
     }
+    
+    /**
+     * set charging events
+     * 
+     */
+    public void setChargingEvents (String s, String e, VehicleAgent v, String charging) {
+    	ChargingEvent ce = new ChargingEvent(this, v, charging, s ,e );
+    	chargingEvents.add(ce);
+    	
+    }
 
     /**
      * @return The id of the ChargingStation.
@@ -141,7 +152,14 @@ public class Charging_Station_Agent extends Agent{
 		// Register the charging-points service in the yellow pages
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
-		yellowPagesIndex(dfd);
+
+		if( this.fastChargers>0) {
+			yellowPagesIndex("fast",dfd);
+		}
+		if( this.slowChargers>0) {
+			yellowPagesIndex("slow",dfd);
+		}
+		
 		
 		
 		// Initialization for the call for proposals (cfp)
@@ -173,10 +191,12 @@ public class Charging_Station_Agent extends Agent{
 	 * booked: yes OR no : firstly free, after the bookings, not anymore
 	 * 
 	 */
-	public void yellowPagesIndex (DFAgentDescription dfd) {
+	public void yellowPagesIndex (String mode, DFAgentDescription dfd) {
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Charging-Points");
+		sd.addProperties(new Property("mode", mode));
 		
+<<<<<<< HEAD
 //		
 //		for(int i = 0; i < chargers.size(); i++) {
 //
@@ -186,6 +206,11 @@ public class Charging_Station_Agent extends Agent{
 //			
 //		}
 //		
+=======
+		
+	/*	
+		
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 		// this should be completely changed, to be iterative
 		
 		if (getId()==1) {
@@ -210,6 +235,8 @@ public class Charging_Station_Agent extends Agent{
 			sd.addProperties(new Property("booked", "no"));
 		}
 		
+	*/
+		
 		dfd.addServices(sd);
 	}
 	
@@ -224,6 +251,7 @@ public class Charging_Station_Agent extends Agent{
 			@Override
 			protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
 				System.out.println("Agent "+getLocalName()+": CFP received from "+cfp.getSender().getLocalName()+". Action is "+cfp.getContent());
+				System.out.println("inside the contract net class, handleCFP");
 				int proposal = evaluateAction();
 				proposal = proposal + 2;
 				if (proposal > 2) {
@@ -271,6 +299,9 @@ public class Charging_Station_Agent extends Agent{
 	 */
 	private int evaluateAction() {
 		// Simulate an evaluation by generating a random number
+		// here we want to take into consideration the following,
+		//position and cost of time for charging
+		
 		return (int) (Math.random() * 10);
 	}
 
