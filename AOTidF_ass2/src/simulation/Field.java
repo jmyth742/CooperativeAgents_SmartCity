@@ -186,21 +186,7 @@ public class Field
         };
         
         Collections.sort(CSLocationList, CSdistanceComparator);
-    	
-    	for(int i = 0; i < CSLocationList.size(); i++) {
-    		int x1 = location.getRow();
-    		int y1 = location.getCol();
-    		int x2 = (int) CSLocationList.get(i).getLocation().getRow();
-    		int y2 = (int) CSLocationList.get(i).getLocation().getCol();
-    		double distance = Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
-    		
-    		if(distance <= numberofCS) {
-    			nearestCS.add(CSLocationList.get(i));
-    		}
-    	}
-    	
-    	return nearestCS.get(1);
-
+ 
     	return CSLocationList.subList(0, numberofCS);
     }
 
@@ -216,7 +202,6 @@ public class Field
         } else {
             return 0;
         }
-    	return CSLocationList.subList(0, numberofCS);
     }
    
     /**
