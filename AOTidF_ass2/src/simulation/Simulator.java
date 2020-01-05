@@ -114,6 +114,7 @@ public class Simulator {
 			vehicles.get(i).step();
 		}
 		view.showStatus(step, field);
+		
 	}
 	    
     private void createVertStreets(int n) {
@@ -146,6 +147,7 @@ public class Simulator {
     		if(field.getObjectAt(randomLocation) == null) {
         		VehicleAgent vehicle = new VehicleAgent(field, randomLocation);
         		vehicles.add(vehicle);
+        		
        
         		try {
         			ac = cc.acceptNewAgent("VehicleAgent" + i, vehicle);
@@ -154,6 +156,7 @@ public class Simulator {
         			System.out.println("Could not create Agent!");
         			e.printStackTrace();
         		}
+        		
     		}
     	}
 	}
@@ -166,6 +169,8 @@ public class Simulator {
     		
     		int fastChargers = random.nextInt(6) + 1; //between 1-5 fast charger
     		int slowChargers = random.nextInt(15) + 5; // between 5 - 15 slow charger
+    		//slowChargers = 0;
+    		//fastChargers = 1;
     		
     		double slowPrice = 2.00 + (1.00) * random.nextDouble(); // price between 1.00 - 2.00
     		
@@ -200,6 +205,7 @@ public class Simulator {
     			col++;
     		}
     		
+    		
     		try {
     			ac = cc.acceptNewAgent("CSAgent" + i, chargingStation);
     			ac.start();
@@ -207,6 +213,7 @@ public class Simulator {
     			System.out.println("Could not create Agent!");
     			e.printStackTrace();
     		}
+    		
 
     		chargingStations.add(chargingStation);
     	}

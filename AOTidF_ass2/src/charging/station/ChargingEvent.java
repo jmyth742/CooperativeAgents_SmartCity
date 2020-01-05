@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import vehicle.VehicleAgent;
+
 
 /**
  * 
@@ -22,10 +24,11 @@ public class ChargingEvent
     private static final AtomicInteger idGenerator = new AtomicInteger(0);
     private final Charging_Station_Agent station;
     private String kindOfCharging;
-    private long waitingTime;
-    private String vehicle;
+    private final VehicleAgent vehicle;
     private long chargingTime;
     private String condition;
+    private String startTime;
+    private String endTime;
     private Charger charger;
     private long maxWaitingTime;
     private long timestamp;
@@ -41,14 +44,16 @@ public class ChargingEvent
      * @param vehicle The ElectricVehicle of the event.
      * @param kindOfCharging The kind of charging the event demands.
      */
-    public ChargingEvent(final Charging_Station_Agent station, final String vehicle, final String kindOfCharging) {
+    public ChargingEvent(final Charging_Station_Agent station, final VehicleAgent vehicle, final String kindOfCharging, String startTime, String endTime) {
         this.id = idGenerator.incrementAndGet();
         this.station = station;
         this.kindOfCharging = kindOfCharging;
         this.vehicle = vehicle;
         this.condition = "willingToCharge";
-        chargingLog.add(this);
-        this.charger = null;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        //chargingLog.add(this);
+        //this.charger = null;
     }
     
     /**
@@ -82,6 +87,22 @@ public class ChargingEvent
      */
     public void setCondition(final String cond) {
         this.condition = cond;
+    }
+    
+    /**
+     * get the start time
+     */
+    public String getStartTime() {
+    	return this.startTime;
+    	
+    }
+    
+    /**
+     * get the end time
+     */
+    public String getEndTime() {
+    	return this.endTime;
+    	
     }
     
     

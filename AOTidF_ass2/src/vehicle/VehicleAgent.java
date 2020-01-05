@@ -42,6 +42,7 @@ public class VehicleAgent extends Agent {
 	private int step = 0;
 	private double battery_decay = 0.9905;
 	private int nResponders;
+	
 
 	// Position of the agent
 
@@ -55,6 +56,7 @@ public class VehicleAgent extends Agent {
 		this.field = field;
 		setLocation(location);
 	}
+
 
 	// Vehicle Initialization
 	@Override
@@ -70,6 +72,7 @@ public class VehicleAgent extends Agent {
 		nResponders = 2;
 
 		fillSchedule(4);
+		
 		
 		for (int j = 0; j < 1440 - 1; j+=20) {
 			schedule[j] = getRandomNumberInRange(1, 2);
@@ -131,35 +134,43 @@ public class VehicleAgent extends Agent {
 
 				step++;
 			}
-		});
-
+		} );
 	}
 
 	public void step() {
-
-		//field.nearestChargingStation(location, 10).getLocation();
-		random_move();
-		
+		random_move();		
 	}
 
 	public void fillSchedule(int numofBlocks) {
 		int start = 0;
 		int end = schedule.length;
-
-		for (int i = 0; i < numofBlocks; i++) {
-			int temp = (int) getRandomNumberInRange(start, (end / numofBlocks) * (i + 1));
-
-			int value = getRandomNumberInRange(1, 3);
-
+		
+		for(int i = 0; i < numofBlocks; i++) {
+			int temp = (int) getRandomNumberInRange(start, (end / numofBlocks) * (i+1)); 
+			
+			int value = getRandomNumberInRange(1, 2);
+			
 			Arrays.fill(schedule, start, temp, value);
 			start = temp;
 		}
-
-		Arrays.fill(schedule, start, end, 3);
+		
+		Arrays.fill(schedule,start, end, 2);
 	}
 
+    /**
+     * random function to return number between min and max for different
+     * initialisations
+     */
+    private static int getRandomNumberInRange(int min, int max) {
 
-
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+	
+	
 	/**
 	 * Function to do the Registrations in Yellow Pages for every vehicle agent. It
 	 * should use vehicle object to add properties. We should start with the
@@ -168,7 +179,6 @@ public class VehicleAgent extends Agent {
 	 * we want only free place
 	 */
 	public void createYellowPageEntry(ServiceDescription sd) {
-
 		Property mode_m = new Property("mode", "slow");
 		Property mode_t = new Property("mode", "fast");
 
@@ -403,6 +413,7 @@ public class VehicleAgent extends Agent {
 		}
 	}
 
+
 	
 	public void random_move() {
 		int new_col = getRandomNumberInRange(0,29);
@@ -432,20 +443,5 @@ public class VehicleAgent extends Agent {
 	 * 
 	 *           }
 	 **/
-	
-
-	
-	/**
-	 * random function to return number between min and max for different
-	 * initialisations
-	 */
-	private static int getRandomNumberInRange(int min, int max) {
-
-		if (min >= max) {
-			throw new IllegalArgumentException("max must be greater than min");
-		}
-		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
-	}
 //end of class 
 }
