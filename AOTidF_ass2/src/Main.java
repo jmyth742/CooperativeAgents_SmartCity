@@ -8,8 +8,10 @@ import simulation.*;
 
 public class Main {
 	
-	private final static int NUM_OF_CS = 10;
-	private final static int NUM_OF_V = 1;
+	//number of ChargingStation
+	private final static int NUM_OF_CS = 2;
+	//number of Vehicle agents
+	private final static int NUM_OF_V = 5;
 
 	private final static int DEPTH = 30;
 	private final static int WIDTH = 30;
@@ -33,7 +35,13 @@ public class Main {
 		ContainerController cc = rt.createMainContainer(p);
 		
 		Simulator simulator = new Simulator(DEPTH, WIDTH, cc, NUM_OF_CS, NUM_OF_V);
-		simulator.simulate(100);
+
+		
+		//number of steps to simulate
+		int numofSteps = 1;
+		simulator.preBookings();
+		simulator.simulate(numofSteps);
+		
 		
 		
 	}

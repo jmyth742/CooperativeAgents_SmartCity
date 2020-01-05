@@ -3,6 +3,8 @@ package vehicle;
 import java.text.SimpleDateFormat;
 
 import java.util.*;
+
+import charging.station.Charging_Station_Agent;
 import simulation.*;
 import charging.station.*;
 
@@ -67,10 +69,11 @@ public class VehicleAgent extends Agent {
 		ACLMessage msg = new ACLMessage(ACLMessage.CFP);
 		nResponders = 2;
 
+		fillSchedule(4);
+		
 		for (int j = 0; j < 1440 - 1; j+=20) {
 			schedule[j] = getRandomNumberInRange(1, 2);
 		}
-
 		addBehaviour(new CyclicBehaviour(this) {
 			public void action() {
 				battery_life = battery_life * battery_decay;
@@ -79,6 +82,8 @@ public class VehicleAgent extends Agent {
 				if(step == 1438) {
 					step = 0;
 				}
+				//checkCharging();
+
 				//random_move();
 				if (battery_life > 80.00) {
 					// pay attention to schedule and go do what needs to be done.
@@ -132,7 +137,7 @@ public class VehicleAgent extends Agent {
 
 	public void step() {
 
-		field.nearestChargingStation(location, 10).getLocation();
+		//field.nearestChargingStation(location, 10).getLocation();
 		random_move();
 		
 	}
@@ -326,10 +331,26 @@ public class VehicleAgent extends Agent {
 	public boolean checkCharging() {
 		Location CSlocation = CS.getLocation();
 		Location vLocation = getLocation();
+		setLocation(CSlocation);
 		if(CSlocation == vLocation) {
+			System.out.println("car is on charge");
 			return true;
 		}
 		return false;
+	}
+	
+	public double time_til_charged(double battery_life, int type) {
+		double slow = 0.8;
+		double fast = 0.2;
+		double time= 0;
+		//0 means fast charge
+		if(type == 0) {
+			time = 100-battery_life / fast;
+		}else {
+			time = 100-battery_life / slow;
+		}
+		
+		return time;
 	}
 
 	/**
@@ -412,20 +433,7 @@ public class VehicleAgent extends Agent {
 	 *           }
 	 **/
 	
-	
-	public double time_til_charged(double battery_life, int type) {
-		double slow = 0.8;
-		double fast = 0.2;
-		double time= 0;
-		//0 means fast charge
-		if(type == 0) {
-			time = 100-battery_life / fast;
-		}else {
-			time = 100-battery_life / slow;
-		}
-		
-		return time;
-	}
+
 	
 	/**
 	 * random function to return number between min and max for different

@@ -93,8 +93,18 @@ public class Simulator {
         for(int step=1; step <= numSteps; step++) {
 
         	simulateOneStep();
-             delay(60);   // uncomment this to run more slowly
+            delay(60);   // uncomment this to run more slowly
         }
+    }
+    /**
+     * all the pre-Bookings before the simulation
+     */
+    public void preBookings() {
+    	System.out.println("Prebookings .......");
+    	System.out.println("Number of Vehicles Agents " +  vehicles.size());
+    	System.out.println("Number of Stations Agents " +  chargingStations.size());
+    	
+    	
     }
 	
 	public void simulateOneStep() {
@@ -109,7 +119,7 @@ public class Simulator {
     private void createVertStreets(int n) {
     	for(int row = 0; row < field.getDepth(); row++) {
     		for( int col = 0; col < field.getWidth(); col++) {
-    			if((col%n) == 0) {
+    			if((col%n) == 0 || (row%n) == 0) {
     				field.setStreet(row, col);
     				streets.add(new Location(row, col));
     			}

@@ -1,4 +1,5 @@
 package simulation;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -7,6 +8,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
+import charging.station.Charging_Station_Agent;
+
 
 import charging.station.Charging_Station_Agent;
 
@@ -231,11 +234,18 @@ public class Field
     	return CSLocationList;	
     }
     
-    public Charging_Station_Agent nearestChargingStation(Location location, int numberofCS) {
+    public List<Charging_Station_Agent> nearestChargingStation(Location location, int numberofCS) {
     	List<Charging_Station_Agent> CSLocationList = getAllCSList();
-    	double distance;
     	
-    	List<Charging_Station_Agent> nearestCS = new ArrayList<Charging_Station_Agent>();
+        Comparator<Charging_Station_Agent> CSdistanceComparator = new Comparator<Charging_Station_Agent>() {
+            @Override
+            public int compare(Charging_Station_Agent e1, Charging_Station_Agent e2) {
+                return compareTo(e1, e2, location);
+            }
+        };
+        
+        Collections.sort(CSLocationList, CSdistanceComparator);
+        
     	
     	
     	for(int i = 0; i < CSLocationList.size(); i++) {
@@ -250,7 +260,140 @@ public class Field
     		}
     	}
     	
-    	return nearestCS.get(0);
+    	return nearestCS.get(1);
+    	return CSLocationList.subList(0, numberofCS);
     }
+
+    
+    public int compareTo(Charging_Station_Agent cs1, Charging_Station_Agent cs2, Location location) {
+    	double distance1 = BFS(location, cs1.getLocation());
+    	double distance2 = BFS(location, cs2.getLocation());
+		
+        if(distance1 < distance2) {
+            return -1;
+        } else if (distance1 > distance2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    	return CSLocationList.subList(0, numberofCS);
+    }
+
+    
+    public int compareTo(Charging_Station_Agent cs1, Charging_Station_Agent cs2, Location location) {
+    	double distance1 = BFS(location, cs1.getLocation());
+    	double distance2 = BFS(location, cs2.getLocation());
+		
+        if(distance1 < distance2) {
+            return -1;
+        } else if (distance1 > distance2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+   
+    /**
+     * Everything what is neccesary to compute the shortest path between two points in the street grid
+     * Uses the BFS Algorithmus
+     */
+    
+	// These arrays are used to get row and column 
+	// numbers of 4 neighbours of a given cell 
+	static int rowNum[] = {-1, 0, 0, 1}; 
+	static int colNum[] = {0, -1, 1, 0}; 
+	  
+	// function to find the shortest path between 
+	// a given source cell to a destination cell. 
+	public int BFS(Location src, 
+	                            Location dest) 
+	{ 
+		List<Location> path = new ArrayList<Location>();
+	    // check source and destination cell 
+	    // of the matrix have value 1 
+	    if (street[src.getRow()][src.getCol()] != 1 ||  
+	        street[dest.getRow()][dest.getCol()] != 1) 
+	        return -1; 
+	  
+	    boolean [][]visited = new boolean[width][depth]; 
+	      
+	    // Mark the source cell as visited 
+	    visited[src.getRow()][src.getCol()] = true; 
+	  
+	    // Create a queue for BFS 
+	    Queue<queueNode> q = new LinkedList<>(); 
+	      
+	    // Distance of source cell is 0 
+	    queueNode s = new queueNode(src, 0); 
+	    q.add(s); // Enqueue source cell 
+	  
+	    // Do a BFS starting from source cell 
+	    while (!q.isEmpty()) 
+	    { 
+	        queueNode curr = q.peek(); 
+	        Location pt = curr.pt; 
+	  
+	        // If we have reached the destination cell, 
+	        // we are done 
+	        if (pt.getRow() == dest.getRow() && pt.getCol() == dest.getCol()) {
+	        	
+	        	return curr.dist;
+	        }
+	            
+	        // Otherwise dequeue the front cell  
+	        // in the queue and enqueue 
+	        // its adjacent cells 
+	        q.remove(); 
+	  
+	        for (int i = 0; i < 4; i++) 
+	        { 
+	            int row = pt.getRow() + rowNum[i]; 
+	            int col = pt.getCol() + colNum[i]; 
+	              
+	            // if adjacent cell is valid, has path  
+	            // and not visited yet, enqueue it. 
+	            if (isValid(row, col) &&  
+	                    street[row][col] == 1 &&  
+	                    !visited[row][col]) 
+	            { 
+	                // mark cell as visited and enqueue it 
+	                visited[row][col] = true; 
+	                queueNode Adjcell = new queueNode(new Location(row, col), 
+	                                                      curr.dist + 1 ); 
+	                q.add(Adjcell); 
+	            } 
+	        } 
+	    } 
+	  
+	    // Return -1 if destination cannot be reached 
+	    return -1; 
+		}
+	
+		// check whether given cell (row, col)  
+		// is a valid cell or not. 
+		public boolean isValid(int row, int col) 
+		{ 
+		    // return true if row number and  
+		    // column number is in range 
+		    return (row >= 0) && (row < width) && 
+		           (col >= 0) && (col < depth) && 
+		           (street[row][col] == 1); 
+		} 
+		  
+		
+
+
+	// A Data Structure for queue used in BFS 
+	static class queueNode 
+	{ 
+	    Location pt; // The cordinates of a cell 
+	    int dist; // cell's distance of from the source 
+	  
+	    public queueNode(Location pt, int dist) 
+	    { 
+	        this.pt = pt; 
+	        this.dist = dist; 
+	    } 
+	};
 }
 
