@@ -169,8 +169,8 @@ public class Simulator {
     		
     		int fastChargers = random.nextInt(6) + 1; //between 1-5 fast charger
     		int slowChargers = random.nextInt(15) + 5; // between 5 - 15 slow charger
-    		slowChargers = 0;
-    		fastChargers = 1;
+    		//slowChargers = 0;
+    		//fastChargers = 1;
     		
     		double slowPrice = 2.00 + (1.00) * random.nextDouble(); // price between 1.00 - 2.00
     		
