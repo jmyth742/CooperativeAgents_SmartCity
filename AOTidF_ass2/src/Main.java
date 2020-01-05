@@ -35,6 +35,7 @@ public class Main {
 		Simulator simulator = new Simulator(DEPTH, WIDTH, cc, NUM_OF_CS, NUM_OF_V);
 		simulator.simulate(1);
 		
+		
 	}
 
 }

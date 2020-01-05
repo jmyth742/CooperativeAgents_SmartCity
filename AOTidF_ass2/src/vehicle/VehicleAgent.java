@@ -57,13 +57,6 @@ public class VehicleAgent extends Agent {
 	@Override
 	protected void setup() {
 
-		// Object[] args = getArguments();
-		// String goal = (String) args[0]
-		// msg of created agent
-		// System.out.println("Vehicle Agent "+getAID().getName()+" is ready with goal "
-		// + goal);
-		// System.out.println("Agent "+getLocalName()+" searching for services of type
-		// \"Charging-Points\"");
 		battery_life = getRandomNumberInRange(55, 90);		
 		System.out.println("Vehicle Agent "+ getLocalName() +" is ready with goal " + goal + " and location " + location.toString());
 	    
@@ -73,19 +66,16 @@ public class VehicleAgent extends Agent {
 		nResponders = 2;
 
 		for (int j = 0; j < 1440 - 1; j++) {
-			schedule[j] = getRandomNumberInRange(1, 3);
-			//System.out.print("schedule is " + schedule[j][0]);
-			//System.out.print("\n");
+			schedule[j] = getRandomNumberInRange(1, 2);
 		}
 
 		addBehaviour(new CyclicBehaviour(this) {
 			public void action() {
 				battery_life = battery_life * battery_decay;
 				System.out.println("battery life is:" + battery_life);
-
+				int job = schedule[step];
 				if (battery_life > 80.00) {
 					// pay attention to schedule and go do what needs to be done.
-					int job = schedule[step];
 					get_job(job);
 					fillSchedule(8);			
 				}
@@ -94,7 +84,7 @@ public class VehicleAgent extends Agent {
 				// }
 				else if (battery_life > 30.00 && battery_life < 80.00) {
 					// forget schedule just go charge
-					
+					 get_job(job);
 					  try { // Build the description used as template for the search
 						  DFAgentDescription template = new DFAgentDescription(); ServiceDescription
 						  templateSd = new ServiceDescription(); templateSd.setType("Charging-Points");
@@ -110,7 +100,9 @@ public class VehicleAgent extends Agent {
 						  catch (FIPAException fe) { fe.printStackTrace(); }
 					
 				} else if (battery_life < 30.00) {
+					get_job(job);
 					// forget schedule just go charge
+					//move_to_charging_station()
 				}
 				 
 				step++;
@@ -279,6 +271,7 @@ public class VehicleAgent extends Agent {
 						reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
 						acceptances.addElement(reply);
 						int proposal = Integer.parseInt(msg.getContent());
+						System.out.println("THE PROPOSAL IS " + proposal);
 						if (proposal > bestProposal) {
 							bestProposal = proposal;
 							bestProposer = msg.getSender();
@@ -345,7 +338,7 @@ public class VehicleAgent extends Agent {
         field.place(this, newLocation);
     }
 	
-	private class stepBehaviour extends Behaviour{
+/*	private class stepBehaviour extends Behaviour{
 		 
 		@Override
 		public void action() {
@@ -372,19 +365,21 @@ public class VehicleAgent extends Agent {
 			return false;
 		}
 		}
+*/
 
 	public void get_job(int job) {
 		switch (job) {
 		case 1:
 			// Perform operation 1: print out a message
-			System.out.println("Operation 1");
+			System.out.println("Random Move on street");
+			// here we put the random move function on the street.
 			break;
 		case 2:
-			System.out.println("Operation 2");
+			System.out.println("Do Nothing -- chill");
+			//here nothing is happening.
 			break;
-		case 3:
-			System.out.println("Operation 3");
-			break;
+			
+
 		}
 	}
 	/**
