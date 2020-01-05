@@ -216,6 +216,7 @@ public class Charging_Station_Agent extends Agent{
 			protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
 				System.out.println("Agent "+getLocalName()+": CFP received from "+cfp.getSender().getLocalName()+". Action is "+cfp.getContent());
 				int proposal = evaluateAction();
+				proposal = proposal + 2;
 				if (proposal > 2) {
 					// We provide a proposal
 					System.out.println("Agent "+getLocalName()+": Proposing "+proposal);
