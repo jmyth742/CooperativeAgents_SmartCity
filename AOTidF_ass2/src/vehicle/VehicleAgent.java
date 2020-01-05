@@ -56,7 +56,7 @@ public class VehicleAgent extends Agent {
 	@Override
 	protected void setup() {
 
-		battery_life = getRandomNumberInRange(55, 90);
+		battery_life = getRandomNumberInRange(70, 90);
 		System.out.println("Vehicle Agent " + getLocalName() + " is ready with goal " + goal + " and location "
 				+ location.toString());
 
@@ -72,8 +72,12 @@ public class VehicleAgent extends Agent {
 		addBehaviour(new CyclicBehaviour(this) {
 			public void action() {
 				battery_life = battery_life * battery_decay;
-				System.out.println("battery life is:" + battery_life);
+				//System.out.println("battery life is:" + battery_life);
 				int job = schedule[step];
+				if(step == 1438) {
+					step = 0;
+				}
+				//random_move();
 				if (battery_life > 80.00) {
 					// pay attention to schedule and go do what needs to be done.
 
@@ -127,15 +131,10 @@ public class VehicleAgent extends Agent {
 	public void step() {
 
 		field.nearestChargingStation(location, 10).getLocation();
+		random_move();
+		
+		
 
-//		field.clear(location);
-//		
-//		int row = getRandomNumberInRange(0,25);
-//		int col = getRandomNumberInRange(0,25);
-//		
-//		Location newLocation = new Location(row, col);
-//		field.place(this, newLocation);
-//		setLocation(newLocation);
 
 	}
 
@@ -155,18 +154,7 @@ public class VehicleAgent extends Agent {
 		Arrays.fill(schedule, start, end, 3);
 	}
 
-	/**
-	 * random function to return number between min and max for different
-	 * initialisations
-	 */
-	private static int getRandomNumberInRange(int min, int max) {
 
-		if (min >= max) {
-			throw new IllegalArgumentException("max must be greater than min");
-		}
-		Random r = new Random();
-		return r.nextInt((max - min) + 1) + min;
-	}
 
 	/**
 	 * Function to do the Registrations in Yellow Pages for every vehicle agent. It
@@ -376,6 +364,23 @@ public class VehicleAgent extends Agent {
 
 		}
 	}
+
+	
+	public void random_move() {
+		int new_col = getRandomNumberInRange(0,29);
+		int new_row = getRandomNumberInRange(0,29);
+		int s = field.getStreetAt(new_row, new_col);
+		//System.out.println("street at " + s);
+		
+		if(s == 1) {
+			field.clear(location);
+			//field.place(this, new Location(new_row,new_col));
+			Location newLocation = new Location(new_row, new_col);
+			field.place(this, newLocation);
+			setLocation(newLocation);
+		}
+	}
+
 	
 	/**
 	 * private class ChargingStationRequest extends Behaviour{
@@ -389,5 +394,19 @@ public class VehicleAgent extends Agent {
 	 * 
 	 *           }
 	 **/
+	
+	
+	/**
+	 * random function to return number between min and max for different
+	 * initialisations
+	 */
+	private static int getRandomNumberInRange(int min, int max) {
+
+		if (min >= max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
 //end of class 
 }
