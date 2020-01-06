@@ -194,8 +194,11 @@ public class Charging_Station_Agent extends Agent{
 	public void yellowPagesIndex (String mode, DFAgentDescription dfd) {
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Charging-Points");
-		sd.addProperties(new Property("mode", mode));
-		
+		sd.setName(getLocalName()+"-Charging-Points");
+		System.out.println(mode);
+		Property modeP = new Property("mode", mode);
+		sd.addProperties(modeP);
+	
 	/*	
 		
 >>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
