@@ -188,8 +188,7 @@ public class Charging_Station_Agent extends Agent{
 		
 	}
 	
-<<<<<<< HEAD
-//	/**
+	/**
 //	 * Function to do the Registrations in Yellow Pages
 //	 * for every charging station.
 //	 * It should use charging station object to add properties.
@@ -212,7 +211,6 @@ public class Charging_Station_Agent extends Agent{
 //					chargers.get(i).getKindOfCharging()));
 //		}
 
-=======
 	/**
 	 * Function to do the Registrations in Yellow Pages
 	 * for every charging station.
@@ -231,34 +229,30 @@ public class Charging_Station_Agent extends Agent{
 		Property modeP = new Property("mode", mode);
 		sd.addProperties(modeP);
 	
-	/*	
-		
->>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
 		// this should be completely changed, to be iterative
 		
-		if (getId()==1) {
-			sd.setName(getLocalName()+"-Charging-Points");
-			sd.addProperties(new Property("mode", "fast"));
-			sd.addProperties(new Property("start", "12"));
-			sd.addProperties(new Property("end", "14"));
-			sd.addProperties(new Property("booked", "no"));
-		}
-		else if (getId()==2) {
-			sd.setName(getLocalName()+"-Charging-Points");
-			sd.addProperties(new Property("mode", "fast"));
-			sd.addProperties(new Property("start", "12"));
-			sd.addProperties(new Property("end", "14"));
-			sd.addProperties(new Property("booked", "no"));
-		}
-		else {
-			sd.setName(getLocalName()+"-Charging-Points");
-			sd.addProperties(new Property("mode", "slow"));
-			sd.addProperties(new Property("start", "16"));
-			sd.addProperties(new Property("end", "18"));
-			sd.addProperties(new Property("booked", "no"));
-		}
->>>>>>> 3f82bd2ceabaef1d72a9372e906fc08007506daf
-		
+//		if (getId()==1) {
+//			sd.setName(getLocalName()+"-Charging-Points");
+//			sd.addProperties(new Property("mode", "fast"));
+//			sd.addProperties(new Property("start", "12"));
+//			sd.addProperties(new Property("end", "14"));
+//			sd.addProperties(new Property("booked", "no"));
+//		}
+//		else if (getId()==2) {
+//			sd.setName(getLocalName()+"-Charging-Points");
+//			sd.addProperties(new Property("mode", "fast"));
+//			sd.addProperties(new Property("start", "12"));
+//			sd.addProperties(new Property("end", "14"));
+//			sd.addProperties(new Property("booked", "no"));
+//		}
+//		else {
+//			sd.setName(getLocalName()+"-Charging-Points");
+//			sd.addProperties(new Property("mode", "slow"));
+//			sd.addProperties(new Property("start", "16"));
+//			sd.addProperties(new Property("end", "18"));
+//			sd.addProperties(new Property("booked", "no"));
+//		}
+//		
 //		// this should be completely changed, to be iterative
 //		
 //		if (getId()==1) {
@@ -284,7 +278,7 @@ public class Charging_Station_Agent extends Agent{
 //		}
 //		
 		
-//	}
+	}
 	
 	/**
 	 * ContractNet for the station
