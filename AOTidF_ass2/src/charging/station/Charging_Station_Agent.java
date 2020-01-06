@@ -188,6 +188,7 @@ public class Charging_Station_Agent extends Agent{
 		
 	}
 	
+<<<<<<< HEAD
 //	/**
 //	 * Function to do the Registrations in Yellow Pages
 //	 * for every charging station.
@@ -211,6 +212,52 @@ public class Charging_Station_Agent extends Agent{
 //					chargers.get(i).getKindOfCharging()));
 //		}
 
+=======
+	/**
+	 * Function to do the Registrations in Yellow Pages
+	 * for every charging station.
+	 * It should use charging station object to add properties.
+	 * We should start with the following ones:
+	 * mode: fast or slow (number of entries in yellow pages depending on chargers)
+	 * start/end : let's have at first point 2 time-slots for every entry (12-14,14-16)
+	 * booked: yes OR no : firstly free, after the bookings, not anymore
+	 * 
+	 */
+	public void yellowPagesIndex (String mode, DFAgentDescription dfd) {
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("Charging-Points");
+		sd.setName(getLocalName()+"-Charging-Points");
+		System.out.println(mode);
+		Property modeP = new Property("mode", mode);
+		sd.addProperties(modeP);
+	
+	/*	
+		
+>>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
+		// this should be completely changed, to be iterative
+		
+		if (getId()==1) {
+			sd.setName(getLocalName()+"-Charging-Points");
+			sd.addProperties(new Property("mode", "fast"));
+			sd.addProperties(new Property("start", "12"));
+			sd.addProperties(new Property("end", "14"));
+			sd.addProperties(new Property("booked", "no"));
+		}
+		else if (getId()==2) {
+			sd.setName(getLocalName()+"-Charging-Points");
+			sd.addProperties(new Property("mode", "fast"));
+			sd.addProperties(new Property("start", "12"));
+			sd.addProperties(new Property("end", "14"));
+			sd.addProperties(new Property("booked", "no"));
+		}
+		else {
+			sd.setName(getLocalName()+"-Charging-Points");
+			sd.addProperties(new Property("mode", "slow"));
+			sd.addProperties(new Property("start", "16"));
+			sd.addProperties(new Property("end", "18"));
+			sd.addProperties(new Property("booked", "no"));
+		}
+>>>>>>> 3f82bd2ceabaef1d72a9372e906fc08007506daf
 		
 //		// this should be completely changed, to be iterative
 //		
