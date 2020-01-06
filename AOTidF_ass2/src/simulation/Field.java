@@ -29,17 +29,20 @@ public class Field
     
     //matrix of the street. If at a location is a street the value is 1 otherwise 0
     public int[][] street;
+    
+    private List<Charging_Station_Agent> chargingStations;
     /**
 	 * 
 	 * @param depth
 	 * @param width
 	 */
-    public Field(int depth, int width)
+    public Field(int depth, int width,List<Charging_Station_Agent> chargingStations)
     {
         this.depth = depth;
         this.width = width;
         field = new Object[depth][width];
         street = new int[depth][width];
+        this.chargingStations = chargingStations;
     }
     
     /**
@@ -163,21 +166,24 @@ public class Field
      * @return List of Charging_Station_Agents
      * 
      */
-    public List<Charging_Station_Agent> getAllCSList() {
-    	List<Charging_Station_Agent> CSLocationList= new ArrayList<Charging_Station_Agent>();
-    	for(int row = 0; row < depth; row++) {
-    		for(int col = 0; col < width; col++) {
-    			if(getObjectAt(row,col) != null && getObjectAt(row, col).getClass() == charging.station.Charging_Station_Agent.class) {
-    					CSLocationList.add((Charging_Station_Agent) getObjectAt(row,col));
-    			}
-    		}
-    	}
-    	return CSLocationList;	
-    }
+//    public List<Charging_Station_Agent> getAllCSList() {
+//    	List<Charging_Station_Agent> CSLocationList= new ArrayList<Charging_Station_Agent>();
+//    	for(int row = 0; row < depth; row++) {
+//    		for(int col = 0; col < width; col++) {
+//    			if(getObjectAt(row,col) != null && getObjectAt(row, col).getClass() == charging.station.Charging_Station_Agent.class) {
+//    					CSLocationList.add(getObjectAt(row, col));
+//    			}
+//    		}
+//    	}
+//    	return CSLocationList;	
+//    }
     
     public List<Charging_Station_Agent> nearestChargingStation(Location location, int numberofCS) {
-    	List<Charging_Station_Agent> CSLocationList = getAllCSList();
     	
+    	if(chargingStations.size() < numberofCS) {
+    		System.out.print("Number of nearest Charging Station is higher than the created charging stations in the simulation!");
+    		return null;
+    	}
         Comparator<Charging_Station_Agent> CSdistanceComparator = new Comparator<Charging_Station_Agent>() {
             @Override
             public int compare(Charging_Station_Agent e1, Charging_Station_Agent e2) {
@@ -185,9 +191,9 @@ public class Field
             }
         };
         
-        Collections.sort(CSLocationList, CSdistanceComparator);
+        Collections.sort(chargingStations, CSdistanceComparator);
  
-    	return CSLocationList.subList(0, numberofCS);
+    	return chargingStations.subList(0, numberofCS);
     }
 
     
@@ -219,7 +225,6 @@ public class Field
 	public int BFS(Location src, 
 	                            Location dest) 
 	{ 
-		List<Location> path = new ArrayList<Location>();
 	    // check source and destination cell 
 	    // of the matrix have value 1 
 	    if (street[src.getRow()][src.getCol()] != 1 ||  
@@ -277,7 +282,7 @@ public class Field
 	    } 
 	  
 	    // Return -1 if destination cannot be reached 
-	    return -1; 
+	    return 0; 
 		}
 	
 		// check whether given cell (row, col)  

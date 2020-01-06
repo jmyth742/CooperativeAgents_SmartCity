@@ -52,7 +52,7 @@ public class Simulator {
         vehicles = new ArrayList<>();
         chargingStations = new ArrayList<>();
         streets = new ArrayList<Location>();
-        field = new Field(depth, width);
+        field = new Field(depth, width, chargingStations);
         
 
         // Create a view of the state of each location in the field.
@@ -93,16 +93,16 @@ public class Simulator {
         for(int step=1; step <= numSteps; step++) {
 
         	simulateOneStep();
-            delay(60);   // uncomment this to run more slowly
+            delay(200);   // uncomment this to run more slowly
         }
     }
     /**
      * all the pre-Bookings before the simulation
      */
     public void preBookings() {
-    	System.out.println("Prebookings .......");
-    	System.out.println("Number of Vehicles Agents " +  vehicles.size());
-    	System.out.println("Number of Stations Agents " +  chargingStations.size());
+//    	System.out.println("Prebookings .......");
+//    	System.out.println("Number of Vehicles Agents " +  vehicles.size());
+//    	System.out.println("Number of Stations Agents " +  chargingStations.size());
     	
     	
     }
@@ -113,13 +113,14 @@ public class Simulator {
 		for(int i = 0; i < vehicles.size(); i++) {
 			vehicles.get(i).step();
 		}
+		
 		view.showStatus(step, field);
 		
 	}
 	    
     private void createVertStreets(int n) {
-    	for(int row = 0; row < field.getDepth(); row++) {
-    		for( int col = 0; col < field.getWidth(); col++) {
+    	for(int row = 1; row < field.getDepth()-1; row++) {
+    		for( int col = 1; col < field.getWidth()-1; col++) {
     			if((col%n) == 0 || (row%n) == 0) {
     				field.setStreet(row, col);
     				streets.add(new Location(row, col));
@@ -129,7 +130,7 @@ public class Simulator {
     }
     
     private void createHorStreet(int row) {
-    	for( int col = 0; col < field.getWidth(); col++) {
+    	for( int col = 1; col < field.getWidth()-1; col++) {
     		field.setStreet(row, col);
     		Location location = new Location(row, col);
     		if(!(streets.contains(location))) {

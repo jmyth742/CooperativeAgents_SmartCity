@@ -1,9 +1,12 @@
 package charging.station;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import jade.lang.acl.UnreadableException;
 import jade.proto.ContractNetResponder;
 import simulation.Field;
 import simulation.Location;
@@ -50,7 +53,7 @@ import simulation.*;
 
 public class Charging_Station_Agent extends Agent{
 	
-	private int id;
+	public int id;
 	private String name;
     //private BookingList<ChargingEvent> fastBookingList;
     //private BookingList<ChargingEvent> slowBookingList;
@@ -152,15 +155,19 @@ public class Charging_Station_Agent extends Agent{
 		// Register the charging-points service in the yellow pages
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("Charging-Points");
 
-		if( this.fastChargers>0) {
-			yellowPagesIndex("fast",dfd);
-		}
-		if( this.slowChargers>0) {
-			yellowPagesIndex("slow",dfd);
-		}
+		sd.setName(getLocalName()+"-Charging-Points");
+
+//		if( this.fastChargers>0) {
+//			yellowPagesIndex("fast",dfd);
+//		}
+//		if( this.slowChargers>0) {
+//			yellowPagesIndex("slow",dfd);
+//		}
 		
-		
+		dfd.addServices(sd);
 		
 		// Initialization for the call for proposals (cfp)
 		System.out.println("Agent "+getLocalName()+ " at loction: " + location.toString() +" is waiting for CFP...");
@@ -181,52 +188,56 @@ public class Charging_Station_Agent extends Agent{
 		
 	}
 	
-	/**
-	 * Function to do the Registrations in Yellow Pages
-	 * for every charging station.
-	 * It should use charging station object to add properties.
-	 * We should start with the following ones:
-	 * mode: fast or slow (number of entries in yellow pages depending on chargers)
-	 * start/end : let's have at first point 2 time-slots for every entry (12-14,14-16)
-	 * booked: yes OR no : firstly free, after the bookings, not anymore
-	 * 
-	 */
-	public void yellowPagesIndex (String mode, DFAgentDescription dfd) {
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("Charging-Points");
-		sd.addProperties(new Property("mode", mode));
+//	/**
+//	 * Function to do the Registrations in Yellow Pages
+//	 * for every charging station.
+//	 * It should use charging station object to add properties.
+//	 * We should start with the following ones:
+//	 * mode: fast or slow (number of entries in yellow pages depending on chargers)
+//	 * start/end : let's have at first point 2 time-slots for every entry (12-14,14-16)
+//	 * booked: yes OR no : firstly free, after the bookings, not anymore
+//	 * 
+//	 */
+//	public void yellowPagesIndex (String mode, DFAgentDescription dfd) {
+//		ServiceDescription sd = new ServiceDescription();
+//		sd.setType("Charging-Points");
+////		sd.addProperties(new Property("mode", mode));
+//		
+//		for(int i=0; i< chargers.size(); i++) {
+//			sd.setName(getLocalName()+"-Charging-Points-Charger" + i );
+//
+//			dfd.addServices(sd);
+//			sd.addProperties(new Property("mode", 
+//					chargers.get(i).getKindOfCharging()));
+//		}
+
 		
-	/*	
+//		// this should be completely changed, to be iterative
+//		
+//		if (getId()==1) {
+//			sd.setName(getLocalName()+"-Charging-Points");
+//			sd.addProperties(new Property("mode", "fast"));
+//			sd.addProperties(new Property("start", "12"));
+//			sd.addProperties(new Property("end", "14"));
+//			sd.addProperties(new Property("booked", "no"));
+//		}
+//		else if (getId()==2) {
+//			sd.setName(getLocalName()+"-Charging-Points");
+//			sd.addProperties(new Property("mode", "fast"));
+//			sd.addProperties(new Property("start", "12"));
+//			sd.addProperties(new Property("end", "14"));
+//			sd.addProperties(new Property("booked", "no"));
+//		}
+//		else {
+//			sd.setName(getLocalName()+"-Charging-Points");
+//			sd.addProperties(new Property("mode", "slow"));
+//			sd.addProperties(new Property("start", "16"));
+//			sd.addProperties(new Property("end", "18"));
+//			sd.addProperties(new Property("booked", "no"));
+//		}
+//		
 		
->>>>>>> 35cc1f173140b91c7710aeee8b6a8f5de4bd361e
-		// this should be completely changed, to be iterative
-		
-		if (getId()==1) {
-			sd.setName(getLocalName()+"-Charging-Points");
-			sd.addProperties(new Property("mode", "fast"));
-			sd.addProperties(new Property("start", "12"));
-			sd.addProperties(new Property("end", "14"));
-			sd.addProperties(new Property("booked", "no"));
-		}
-		else if (getId()==2) {
-			sd.setName(getLocalName()+"-Charging-Points");
-			sd.addProperties(new Property("mode", "fast"));
-			sd.addProperties(new Property("start", "12"));
-			sd.addProperties(new Property("end", "14"));
-			sd.addProperties(new Property("booked", "no"));
-		}
-		else {
-			sd.setName(getLocalName()+"-Charging-Points");
-			sd.addProperties(new Property("mode", "slow"));
-			sd.addProperties(new Property("start", "16"));
-			sd.addProperties(new Property("end", "18"));
-			sd.addProperties(new Property("booked", "no"));
-		}
-		
-	*/
-		
-		dfd.addServices(sd);
-	}
+//	}
 	
 	/**
 	 * ContractNet for the station
@@ -238,9 +249,17 @@ public class Charging_Station_Agent extends Agent{
 		addBehaviour(new ContractNetResponder(this, template) {
 			@Override
 			protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
-				System.out.println("Agent "+getLocalName()+": CFP received from "+cfp.getSender().getLocalName()+". Action is "+cfp.getContent());
+				String[] oArgs = null;
+				
+				try {
+					oArgs = (String[]) cfp.getContentObject();
+				} catch (UnreadableException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				System.out.println("Agent "+getLocalName()+": CFP received from "+cfp.getSender().getLocalName()+". Action is "+ oArgs[0]);
 				System.out.println("inside the contract net class, handleCFP");
-				int proposal = evaluateAction();
+				int proposal = evaluateAction(oArgs);
 				proposal = proposal + 2;
 				if (proposal > 2) {
 					// We provide a proposal
@@ -285,12 +304,108 @@ public class Charging_Station_Agent extends Agent{
 	 * Should be a number which comes from combination of distance, price of charging and whatever
 	 * @return
 	 */
-	private int evaluateAction() {
+	private int evaluateAction(String[] oArgs) {
+		checkfreeSlot(oArgs);
+		
+		//save time
+//		double a = 0.8;
+//		double b = 0.2;
+//		if(oArgs[5] == "t") {
+//			
+//		}
+		
+		return 0;
 		// Simulate an evaluation by generating a random number
 		// here we want to take into consideration the following,
 		//position and cost of time for charging
 		
-		return (int) (Math.random() * 10);
+		
+	}
+	
+	private int checkfreeSlot(String[] oArgs) {
+		int propose = -1;
+		
+		
+		int start = Integer.valueOf(oArgs[2]);
+		int end = Integer.valueOf(oArgs[3]);
+		double battery_life = Double.valueOf(oArgs[1]);
+		String mode = oArgs[5];
+		Location locat = new Location(Integer.valueOf(oArgs[4]), Integer.valueOf(oArgs[6]));
+		
+		
+		int charger = -1;
+		int start_slot = -1;
+		double time = time_til_charged(battery_life,mode);
+		
+		int free_slot = -1;
+	
+		int way_time = field.BFS(locat, this.location);
+		System.out.print("way time" + way_time);
+		
+		for(int i = 0; i < chargers.size(); i++) {
+			outerloop:
+			for(int j = start; j < end; j++) {
+				
+				if(chargers.get(i).getKindOfCharging().equalsIgnoreCase(mode) && shedule[i][j] == 0) {
+					for(int k = j; k < j + (int) time; j++) {
+						if(k+j > 24*60) {
+							break;
+						}
+						if(shedule[i][k] == 1) {
+							free_slot = 0;
+							break;
+						}
+						else if(shedule[i][k] == 0){
+							
+							free_slot = 1;
+							
+						}
+					}
+				}
+				
+				if(free_slot == 1) {
+						
+//					System.out.println("Found free slot!");
+					charger = i;
+					start_slot = j;
+					propose = (int) proposalCal(time,way_time, mode, locat);
+//					Arrays.fill(shedule[i], start_slot, (int) (start_slot+time), 1);
+					break outerloop;			
+				}
+			}
+		}
+		
+		System.out.println("Propose " + propose);
+		
+		return propose;
+	}
+	
+	private double proposalCal(double charg_time,int way_time, String mode, Location location) {
+
+		double a = 0.8;
+		double b = 0.2;
+		
+		if(mode.equalsIgnoreCase("fast")) {
+			return (double) (b * (unitPriceFast * charg_time) + a * (charg_time + way_time));
+		} else if(mode.equalsIgnoreCase("slow")) {
+			return (double) (a * (unitPriceSlow * charg_time) + b * (charg_time + way_time));
+		}
+		return -1;
+
+	}
+	
+	public double time_til_charged(double battery_life, String type) {
+		double slow = 0.8;
+		double fast = 0.2;
+		double time= 0;
+		//0 means fast charge
+		if(type.equalsIgnoreCase("fast")) {
+			time = (100-battery_life) / fast;
+		}else if(type.equalsIgnoreCase("slow")) {
+			time = (100-battery_life) / slow;
+		}
+		
+		return time;
 	}
 
 	/**

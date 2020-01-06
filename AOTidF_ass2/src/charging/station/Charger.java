@@ -65,6 +65,10 @@ public class Charger {
         this.e = ev;
     }
     
+    public Charging_Station_Agent getStation() {
+    	return station;
+    }
+    
     /**
      * @return The ChargingEvent that is linked with the Charger.
      */
@@ -85,6 +89,10 @@ public class Charger {
         }
         location = newLocation;
         field.place(this, newLocation);
+    }
+    
+    public Location getLocation() {
+    	return location;
     }
     
     /**
