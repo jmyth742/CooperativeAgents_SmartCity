@@ -1,5 +1,10 @@
 package simulation;
 import java.awt.Color;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +21,8 @@ public class Simulator {
 	private static final int DEFAULT_DEPTH = 50;
 	
 	private int numofV = 10;
-	private int numofCS = 100;	
+	private int numofCS = 100;
+	public int dead_count = 0;
 	
 	private List<VehicleAgent> vehicles;
 	private List<Charging_Station_Agent> chargingStations;
@@ -86,14 +92,42 @@ public class Simulator {
      * Run the simulation for the given number of steps.
      * Stop before the given number of steps if it ceases to be viable.
      * @param numSteps The number of steps to run for.
+     * @throws IOException 
      * @throws InterruptedException 
      */
-    public void simulate(int numSteps)
+    public void simulate(int numSteps) throws IOException
     {
         for(int step=1; step <= numSteps; step++) {
 
         	simulateOneStep();
-            delay(200);   // uncomment this to run more slowly
+            delay(100);   // uncomment this to run more slowly
+        }
+        
+        System.out.println("Dead count of vehicles: " + dead_count);
+        
+        for(int k =0; k< chargingStations.size(); k++) {
+        	String[][] board = chargingStations.get(k).shedule;
+        	
+        	StringBuilder builder = new StringBuilder();
+        	for(int i = 0; i < board.length; i++)//for each row
+        	{
+        	   for(int j = 0; j < board[0].length; j++)//for each column
+        	   {
+        		   if(board[i][j] == null)
+        			   builder.append("0"+"");//append to the output string
+        		   else
+        			   builder.append("1"+"");
+        	      if(j < board[0].length - 1)//if this is not the last row element
+        	         builder.append(",");//then add comma (if you don't like commas you can use spaces)
+        	   }
+        	   builder.append("\n");//append new line at the end of the row
+        	}
+        	
+        	File file = new File("./shedule/shedule" + k + ".txt");
+
+        	BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+        	writer.write(builder.toString());//save the string representation of the board
+        	writer.close();
         }
     }
     /**
@@ -108,11 +142,22 @@ public class Simulator {
     }
 	
 	public void simulateOneStep() {
+		System.out.println("----------------------------------------------------------------------------------------------");
+		System.out.println("Step: " + step);
+		
 		step++;
 		
 		for(int i = 0; i < vehicles.size(); i++) {
 			vehicles.get(i).step();
+			if((int)vehicles.get(i).get_battery_life() == 0) {
+				System.out.println("Vehicle died");
+				vehicles.remove(vehicles.get(i));
+				dead_count++;
+				
+			}
 		}
+		
+		
 		
 		view.showStatus(step, field);
 		

@@ -1,7 +1,9 @@
 package charging.station;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import jade.core.Agent;
 import jade.lang.acl.ACLMessage;
@@ -70,7 +72,7 @@ public class Charging_Station_Agent extends Agent{
     public ArrayList<Charger> chargers;
     public ArrayList<ChargingEvent> chargingEvents = new ArrayList<>();
     //final ArrayList<Integer> numberOfChargers = new ArrayList<>();
-    private int[][] shedule;
+    public String[][] shedule;
     
 
     //For simulation
@@ -111,7 +113,7 @@ public class Charging_Station_Agent extends Agent{
         
 
         //shedule table: for each minute we have informations of all chargers if they are free or not
-        this.shedule = new int[fastChargers + slowChargers][24 * 60];
+        this.shedule = new String[fastChargers + slowChargers][24 * 60];
     }
         
     /**
@@ -170,7 +172,7 @@ public class Charging_Station_Agent extends Agent{
 		dfd.addServices(sd);
 		
 		// Initialization for the call for proposals (cfp)
-		System.out.println("Agent "+getLocalName()+ " at loction: " + location.toString() +" is waiting for CFP...");
+//		System.out.println("Agent "+getLocalName()+ " at loction: " + location.toString() +" is waiting for CFP...");
 		MessageTemplate template = MessageTemplate.and(
 				MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
 				MessageTemplate.MatchPerformative(ACLMessage.CFP) );
@@ -225,59 +227,9 @@ public class Charging_Station_Agent extends Agent{
 		ServiceDescription sd = new ServiceDescription();
 		sd.setType("Charging-Points");
 		sd.setName(getLocalName()+"-Charging-Points");
-		System.out.println(mode);
+//		System.out.println(mode);
 		Property modeP = new Property("mode", mode);
-		sd.addProperties(modeP);
-	
-		// this should be completely changed, to be iterative
-		
-//		if (getId()==1) {
-//			sd.setName(getLocalName()+"-Charging-Points");
-//			sd.addProperties(new Property("mode", "fast"));
-//			sd.addProperties(new Property("start", "12"));
-//			sd.addProperties(new Property("end", "14"));
-//			sd.addProperties(new Property("booked", "no"));
-//		}
-//		else if (getId()==2) {
-//			sd.setName(getLocalName()+"-Charging-Points");
-//			sd.addProperties(new Property("mode", "fast"));
-//			sd.addProperties(new Property("start", "12"));
-//			sd.addProperties(new Property("end", "14"));
-//			sd.addProperties(new Property("booked", "no"));
-//		}
-//		else {
-//			sd.setName(getLocalName()+"-Charging-Points");
-//			sd.addProperties(new Property("mode", "slow"));
-//			sd.addProperties(new Property("start", "16"));
-//			sd.addProperties(new Property("end", "18"));
-//			sd.addProperties(new Property("booked", "no"));
-//		}
-//		
-//		// this should be completely changed, to be iterative
-//		
-//		if (getId()==1) {
-//			sd.setName(getLocalName()+"-Charging-Points");
-//			sd.addProperties(new Property("mode", "fast"));
-//			sd.addProperties(new Property("start", "12"));
-//			sd.addProperties(new Property("end", "14"));
-//			sd.addProperties(new Property("booked", "no"));
-//		}
-//		else if (getId()==2) {
-//			sd.setName(getLocalName()+"-Charging-Points");
-//			sd.addProperties(new Property("mode", "fast"));
-//			sd.addProperties(new Property("start", "12"));
-//			sd.addProperties(new Property("end", "14"));
-//			sd.addProperties(new Property("booked", "no"));
-//		}
-//		else {
-//			sd.setName(getLocalName()+"-Charging-Points");
-//			sd.addProperties(new Property("mode", "slow"));
-//			sd.addProperties(new Property("start", "16"));
-//			sd.addProperties(new Property("end", "18"));
-//			sd.addProperties(new Property("booked", "no"));
-//		}
-//		
-		
+		sd.addProperties(modeP);		
 	}
 	
 	/**
@@ -290,6 +242,16 @@ public class Charging_Station_Agent extends Agent{
 		addBehaviour(new ContractNetResponder(this, template) {
 			@Override
 			protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
+				/**
+		          * Values of the vehicle
+		          * oArgs[0] = action_name;
+		          * oArgs[1] = battery_life;
+		          * oArgs[2] = start time for a free slot;
+		          * oArgs[3] = end time for a free slot;
+		          * oArgs[4] = way_time
+		          * oArgs[5] = mode of the charger
+		          * **/
+				
 				String[] oArgs = null;
 				
 				try {
@@ -298,21 +260,38 @@ public class Charging_Station_Agent extends Agent{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("Agent "+getLocalName()+": CFP received from "+cfp.getSender().getLocalName()+". Action is "+ oArgs[0]);
-				System.out.println("inside the contract net class, handleCFP");
-				int proposal = evaluateAction(oArgs);
-				proposal = proposal + 2;
-				if (proposal > 2) {
+				System.out.println("Agent "+getLocalName()+": CFP received from " + cfp.getSender().getLocalName() + 
+						". Action is "+ oArgs[0]);
+				//int[] result = new int[]{propose, charger,start_slot, locat.getRow(),
+				//locat.getCol(), way_time};
+				
+				
+				int[] result = checkfreeSlot(oArgs, cfp.getSender().getLocalName());
+				int proposal = result[0];
+				if (proposal != -1) {
 					// We provide a proposal
 					System.out.println("Agent "+getLocalName()+": Proposing "+proposal);
 					ACLMessage propose = cfp.createReply();
 					propose.setPerformative(ACLMessage.PROPOSE);
-					propose.setContent(String.valueOf(proposal));
+					
+					int[] oMsg=new int[5];
+			         oMsg[0] = result[0]; //Proposenumber
+			         oMsg[1] = result[1]; //charger number
+			         oMsg[2] = result[2]; //start_slot
+			         oMsg[3] = result[3]; //way_time
+			         oMsg[4] = result[4]; //time
+			         
+					try {
+						propose.setContentObject(oMsg);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					return propose;
 				}
 				else {
 					// We refuse to provide a proposal
-					System.out.println("Agent "+getLocalName()+": Refuse");
+//					System.out.println("Agent "+getLocalName()+": Refuse");
 					throw new RefuseException("evaluation-failed");
 				}
 			}
@@ -320,20 +299,27 @@ public class Charging_Station_Agent extends Agent{
 			@Override
 			protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose,ACLMessage accept) throws FailureException {
 				System.out.println("Agent "+getLocalName()+": Proposal accepted");
-				if (performAction()) {
-					System.out.println("Agent "+getLocalName()+": Action successfully performed");
-					ACLMessage inform = accept.createReply();
-					inform.setPerformative(ACLMessage.INFORM);
-					return inform;
+							
+				ACLMessage inform = accept.createReply();
+				inform.setPerformative(ACLMessage.INFORM);
+				return inform;
+			}
+
+			private void updateSchedule(String name) {
+				for(int i = 0 ; i < chargers.size(); i++) {
+					for(int j = 0; j < (24 * 60); j++) {
+						if(shedule[i][j] == name) {
+							shedule[i][j] = null;
+						}
+					}
 				}
-				else {
-					System.out.println("Agent "+getLocalName()+": Action execution failed");
-					throw new FailureException("unexpected-error");
-				}	
 			}
 
 			protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
 				System.out.println("Agent "+getLocalName()+": Proposal rejected");
+				
+				updateSchedule(cfp.getSender().getLocalName());
+				
 			}
 		} );
 		
@@ -345,83 +331,70 @@ public class Charging_Station_Agent extends Agent{
 	 * Should be a number which comes from combination of distance, price of charging and whatever
 	 * @return
 	 */
-	private int evaluateAction(String[] oArgs) {
-		checkfreeSlot(oArgs);
+	private int[] checkfreeSlot(String[] oArgs, String name) {
 		
-		//save time
-//		double a = 0.8;
-//		double b = 0.2;
-//		if(oArgs[5] == "t") {
-//			
-//		}
+		/**
+         * Values of the vehicle
+         * oArgs[0] = action_name;
+         * oArgs[1] = battery_life;
+         * oArgs[2] = start time (+way_time) for a free slot;
+         * oArgs[3] = end time for a free slot;
+         * oArgs[4] = way_time
+         * oArgs[5] = mode of the charger
+         * oArgs[6] = time
+         * **/
 		
-		return 0;
-		// Simulate an evaluation by generating a random number
-		// here we want to take into consideration the following,
-		//position and cost of time for charging
-		
-		
-	}
-	
-	private int checkfreeSlot(String[] oArgs) {
 		int propose = -1;
-		
 		
 		int start = Integer.valueOf(oArgs[2]);
 		int end = Integer.valueOf(oArgs[3]);
-		double battery_life = Double.valueOf(oArgs[1]);
 		String mode = oArgs[5];
-		Location locat = new Location(Integer.valueOf(oArgs[4]), Integer.valueOf(oArgs[6]));
 		
 		
 		int charger = -1;
 		int start_slot = -1;
-		double time = time_til_charged(battery_life,mode);
 		
 		int free_slot = -1;
 	
-		int way_time = field.BFS(locat, this.location);
-		System.out.print("way time" + way_time);
+		int way_time = Integer.valueOf(oArgs[4]);
+		int time = Integer.valueOf(oArgs[6]);
+		
+//		System.out.println("start: " + start + "  end: " + end + "end - start = " + (end-start) + " time: " + time);
 		
 		for(int i = 0; i < chargers.size(); i++) {
-			outerloop:
-			for(int j = start; j < end; j++) {
-				
-				if(chargers.get(i).getKindOfCharging().equalsIgnoreCase(mode) && shedule[i][j] == 0) {
-					for(int k = j; k < j + (int) time; j++) {
-						if(k+j > 24*60) {
-							break;
+			if(chargers.get(i).getKindOfCharging().equalsIgnoreCase(mode)) {
+//				System.out.println("In charger " + i + " " + mode);
+				free_slot = -1;
+				if((end - start) > time) {
+					for(int j = start; j < end; j++) {
+//						System.out.println("time: " + j + " free_slot " + free_slot);
+						if(shedule[i][j]==null) {
+							free_slot++;
+						} else{
+							free_slot = -1;
 						}
-						if(shedule[i][k] == 1) {
-							free_slot = 0;
+						if(free_slot == (int) (time)) {
+							start_slot = j - free_slot;
 							break;
-						}
-						else if(shedule[i][k] == 0){
-							
-							free_slot = 1;
-							
 						}
 					}
-				}
-				
-				if(free_slot == 1) {
-						
-//					System.out.println("Found free slot!");
-					charger = i;
-					start_slot = j;
-					propose = (int) proposalCal(time,way_time, mode, locat);
-//					Arrays.fill(shedule[i], start_slot, (int) (start_slot+time), 1);
-					break outerloop;			
-				}
+					if(free_slot != -1 && start_slot != -1) {
+						charger = i;
+//						System.out.println("Found free slot for charger " + charger + " start_slot " + start_slot);
+						propose = (int) proposalCal(time,way_time, mode);
+						Arrays.fill(shedule[charger], start_slot + way_time, start_slot + time, name);
+						break;
+					}
+					
+				}	
 			}
 		}
 		
-		System.out.println("Propose " + propose);
-		
-		return propose;
+		int[] result = new int[]{propose, charger, start_slot, way_time, time};
+		return result;
 	}
 	
-	private double proposalCal(double charg_time,int way_time, String mode, Location location) {
+	private double proposalCal(double charg_time,int way_time, String mode) {
 
 		double a = 0.8;
 		double b = 0.2;
@@ -434,32 +407,7 @@ public class Charging_Station_Agent extends Agent{
 		return -1;
 
 	}
-	
-	public double time_til_charged(double battery_life, String type) {
-		double slow = 0.8;
-		double fast = 0.2;
-		double time= 0;
-		//0 means fast charge
-		if(type.equalsIgnoreCase("fast")) {
-			time = (100-battery_life) / fast;
-		}else if(type.equalsIgnoreCase("slow")) {
-			time = (100-battery_life) / slow;
-		}
-		
-		return time;
-	}
 
-	/**
-	 * Fake number now
-	 * This function should inform if the charging is done or not.
-	 * Useful for the case when we take out a car from charging, to put a car that is in
-	 * emergency mode/
-	 * @return
-	 */
-	private boolean performAction() {
-		// Simulate action execution by generating a random number
-		return (Math.random() > 0.2);
-	}
 
 
 	
