@@ -32,14 +32,15 @@ public class Main {
 		Runtime rt = Runtime.instance();
 		Profile p = new ProfileImpl();
 		p.setParameter(Profile.MAIN_HOST, "localhost");
+		//Show JIAC GUI
 //		p.setParameter(Profile.GUI, "true");
 		ContainerController cc = rt.createMainContainer(p);
 		
 		//Start SImulation
 		Simulator simulator = new Simulator(DEPTH, WIDTH, cc, NUM_OF_CS, NUM_OF_V);		
-		//number of steps to simulate
+		
+		//number of steps (=minutes) to simulate - full day with 24 hours
 		int numofSteps = 24*60;
-		simulator.preBookings();
 		simulator.simulate(numofSteps);
 		
 	}

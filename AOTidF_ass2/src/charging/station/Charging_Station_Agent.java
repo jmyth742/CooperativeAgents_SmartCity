@@ -33,48 +33,24 @@ import jade.domain.FIPAAgentManagement.Property;
 import simulation.*;
 /**
  * 
- * @author anoulis
- * TODO
- * ********IGNORE FOR NOW********
- * List of charging events for every charger.
- * Return cost for chargingPeriod,unitPrice under the communication with CarAgent.
- * Or equivalent message if it's full booked or damaged.
- * ******************************
+ * @author @author Aristeidis Noulis, Jonathan Smyth, Cesar Gonzalez, Veranika Paulava
  * 
- * First we don't use chargers, charging event and bookinglist files, only this one
- * Yellow Page service for publishing the requests and services  
- * - In book Developing Multi Agent systems with JADE page 72 (or Title 4.4)
- * 
- * Let's keep it simple for now
- * Every Charging Station has 1 fast and 1 slow charger.
- * Two time-slots for operation 12-14,14-16
- * Price for fast/slow charging.
- * Location values that can be used to calculate distance from the car
- * Functions to get booked or not condition
+ * Class for the Charging Station
+ *
  */
-
 public class Charging_Station_Agent extends Agent{
 	
 	public int id;
 	private String name;
-    //private BookingList<ChargingEvent> fastBookingList;
-    //private BookingList<ChargingEvent> slowBookingList;
     public int fastChargers;
     public int slowChargers;
     private double unitPriceFast;
     private double unitPriceSlow;
-    //private boolean automaticQueueHandling;
     private static final AtomicInteger idGenerator = new AtomicInteger(0);
-    //private long timestamp;
-    //private Timer timer;
-    private double chargingRateFast;
-    private double chargingRateSlow;
     public ArrayList<Charger> chargers;
     public ArrayList<ChargingEvent> chargingEvents = new ArrayList<>();
-    //final ArrayList<Integer> numberOfChargers = new ArrayList<>();
     public String[][] shedule;
     
-
     //For simulation
     private Field field;
     private Location location;
@@ -95,8 +71,6 @@ public class Charging_Station_Agent extends Agent{
         this.slowChargers = slowChargers;
         this.unitPriceFast = 2 * slowPrice;
         this.unitPriceSlow = slowPrice;
-        this.chargingRateFast = 0.02;
-        this.chargingRateSlow = 0.01;
         
 //        this.automaticQueueHandling = true;
 //        this.fastBookingList = new BookingList<>();
